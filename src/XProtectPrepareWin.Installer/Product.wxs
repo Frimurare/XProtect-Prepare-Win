@@ -31,7 +31,6 @@
     <Icon Id="AppIcon" SourceFile="..\XProtectPrepareWin\Assets\app.ico" />
     <Property Id="ARPPRODUCTICON" Value="AppIcon" />
     <Property Id="ARPURLINFOABOUT" Value="https://github.com/Frimurare/XProtect-Prepare-Win" />
-    <Property Id="ARPNOMODIFY" Value="1" />
 
     <!-- Optional desktop shortcut: on by default, disable with
          msiexec /i ... DESKTOP_SHORTCUT=0 -->
@@ -84,7 +83,7 @@
                 Description="Prepare this Windows machine for Milestone XProtect"
                 Target="[INSTALLDIR]XProtectPrepareWin.exe"
                 WorkingDirectory="INSTALLDIR" />
-      <RegistryValue Root="HKLM"
+      <RegistryValue Root="HKCU"
                      Key="SOFTWARE\Manvarg\XProtectPrepareWin"
                      Name="StartMenuShortcut" Type="integer" Value="1"
                      KeyPath="yes" />
@@ -97,7 +96,7 @@
                 Description="Prepare this Windows machine for Milestone XProtect"
                 Target="[INSTALLDIR]XProtectPrepareWin.exe"
                 WorkingDirectory="INSTALLDIR" />
-      <RegistryValue Root="HKLM"
+      <RegistryValue Root="HKCU"
                      Key="SOFTWARE\Manvarg\XProtectPrepareWin"
                      Name="DesktopShortcut" Type="integer" Value="1"
                      KeyPath="yes" />
