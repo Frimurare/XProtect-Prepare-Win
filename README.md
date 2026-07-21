@@ -67,6 +67,10 @@ This makes the tool **idempotent** — you can re-run it any time. After a Windo
 
 ![About — version, author and disclaimer](docs/screenshot-about.png)
 
+*Bonus: the same app in **Svenska** with the **light theme** — the UI follows your Windows display language and app theme automatically. Här heter det Översikt, Förberedelse och Verktyg.*
+
+![Svenska + light theme — System page](docs/screenshot-svenska-light.png)
+
 ## Install
 
 1. Download the latest `XProtectPrepareWin-x.y.z.msi` from [Releases](https://github.com/Frimurare/XProtect-Prepare-Win/releases).
