@@ -1,0 +1,218 @@
+<UserControl x:Class="XProtectPrepareWin.UI.DashboardPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Foreground="{StaticResource TextBrush}">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="30,24,30,24" MaxWidth="1500">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- Headline -->
+            <StackPanel Grid.Row="0" Margin="0,0,0,20">
+                <TextBlock FontSize="30" FontWeight="SemiBold">
+                    <Run Text="Prepare XProtect. " Foreground="{StaticResource TextBrush}"/><Run Text="Not Windows." Foreground="{StaticResource AccentBrush}"/>
+                </TextBlock>
+                <TextBlock Text="Automate server preparation by Milestone best practice."
+                           FontSize="14" Foreground="{StaticResource MutedBrush}" Margin="0,6,0,0"/>
+            </StackPanel>
+
+            <!-- Info cards -->
+            <Grid Grid.Row="1" Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,8,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE770;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       Foreground="{StaticResource AccentLightBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="System detected" FontSize="12" Foreground="{StaticResource MutedBrush}"
+                                       Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock x:Name="OsValueText" Text="Detecting…" FontSize="16" FontWeight="SemiBold"
+                                   TextWrapping="Wrap" Margin="0,10,0,0"/>
+                        <TextBlock x:Name="OsSubText" Text="" FontSize="11.5" Foreground="{StaticResource MutedBrush}"
+                                   TextWrapping="Wrap" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Style="{StaticResource Card}" Margin="8,0,8,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE714;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       Foreground="{StaticResource AccentLightBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="XProtect version" FontSize="12" Foreground="{StaticResource MutedBrush}"
+                                       Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock x:Name="XpValueText" Text="Detecting…" FontSize="16" FontWeight="SemiBold"
+                                   TextWrapping="Wrap" Margin="0,10,0,0"/>
+                        <TextBlock x:Name="XpSubText" Text="" FontSize="11.5" Foreground="{StaticResource MutedBrush}"
+                                   TextWrapping="Wrap" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Style="{StaticResource Card}" Margin="8,0,0,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE787;" FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                       Foreground="{StaticResource AccentLightBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="Last run" FontSize="12" Foreground="{StaticResource MutedBrush}"
+                                       Margin="8,0,0,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <TextBlock x:Name="LastRunValueText" Text="Never" FontSize="16" FontWeight="SemiBold"
+                                   TextWrapping="Wrap" Margin="0,10,0,0"/>
+                        <TextBlock x:Name="LastRunSubText" Text="" FontSize="11.5" Foreground="{StaticResource MutedBrush}"
+                                   TextWrapping="Wrap" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Status list + progress ring -->
+            <Grid Grid.Row="2" Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="340"/>
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,8,0" Padding="20,16">
+                    <StackPanel>
+                        <TextBlock Text="Preparation status" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                        <ItemsControl x:Name="CategoryList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="0,0,0,1"
+                                            Padding="0,10">
+                                        <StackPanel>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="30"/>
+                                                    <ColumnDefinition Width="175"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="30"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding LeadGlyph}"
+                                                           FontFamily="Segoe MDL2 Assets" FontSize="14"
+                                                           Foreground="{Binding LeadBrush}" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Title}" FontSize="13"
+                                                           FontWeight="SemiBold" Foreground="{StaticResource TextBrush}"
+                                                           VerticalAlignment="Center" TextWrapping="Wrap"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding Subtitle}" FontSize="12"
+                                                           Foreground="{StaticResource MutedBrush}"
+                                                           VerticalAlignment="Center" Margin="10,0"
+                                                           TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Grid.Column="3" Text="{Binding StatusText}" FontSize="12"
+                                                           FontWeight="SemiBold" Foreground="{Binding StatusBrush}"
+                                                           VerticalAlignment="Center"/>
+                                                <ToggleButton Grid.Column="4" Style="{StaticResource ChevronToggle}"
+                                                              IsChecked="{Binding IsExpanded, Mode=TwoWay}"
+                                                              HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                            </Grid>
+                                            <ItemsControl ItemsSource="{Binding Tasks}" Margin="30,8,30,0"
+                                                          Visibility="{Binding IsExpanded, Converter={StaticResource BoolToVis}}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Margin="0,2">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Grid.Column="0" Text="{Binding Name}" FontSize="12"
+                                                                       Foreground="{StaticResource MutedBrush}"/>
+                                                            <TextBlock Grid.Column="1" Text="{Binding StatusText}" FontSize="11.5"
+                                                                       Foreground="{Binding StatusForeground}"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Style="{StaticResource Card}" Margin="8,0,0,0">
+                    <StackPanel VerticalAlignment="Center">
+                        <Grid Width="150" Height="150" HorizontalAlignment="Center" Margin="0,10,0,0">
+                            <Ellipse Stroke="{StaticResource CardBorderBrush}" StrokeThickness="10"
+                                     Width="150" Height="150"/>
+                            <Ellipse x:Name="RingFull" Stroke="{StaticResource GreenBrush}" StrokeThickness="10"
+                                     Width="150" Height="150" Visibility="Collapsed"/>
+                            <Path x:Name="RingArc" Stroke="{StaticResource GreenBrush}" StrokeThickness="10"
+                                  StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                  Width="150" Height="150" Stretch="None" Visibility="Collapsed"/>
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock x:Name="RingText" Text="0%" FontSize="30" FontWeight="SemiBold"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Completed" FontSize="12" Foreground="{StaticResource MutedBrush}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                        <TextBlock x:Name="ReadyTitleText" Text="No preparation run yet" FontSize="17"
+                                   FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,22,0,0"
+                                   TextWrapping="Wrap" TextAlignment="Center"/>
+                        <TextBlock x:Name="ReadySubText"
+                                   Text="Run preparation to optimize this server for XProtect."
+                                   FontSize="12.5" Foreground="{StaticResource MutedBrush}"
+                                   HorizontalAlignment="Center" Margin="16,8,16,0"
+                                   TextWrapping="Wrap" TextAlignment="Center"/>
+                        <Button x:Name="ViewReportButton" Style="{StaticResource SecondaryButton}"
+                                Margin="16,20,16,10" Click="ViewReportButton_Click" IsEnabled="False">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="&#xE7C3;" FontFamily="Segoe MDL2 Assets" FontSize="13"
+                                           VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="View preparation report" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Bottom action bar -->
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="RunButton" Grid.Column="0" Style="{StaticResource PrimaryButton}"
+                        Click="RunButton_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock x:Name="RunButtonText" Text="Run preparation" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button x:Name="ExportLogButton" Grid.Column="2" Style="{StaticResource SecondaryButton}"
+                        Margin="0,0,10,0" Click="ExportLogButton_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE74E;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="Export log" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+
+                <Button x:Name="OpenPSToolsButton" Grid.Column="3" Style="{StaticResource PrimaryButton}"
+                        Click="OpenPSToolsButton_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="12"
+                                   VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="Open MilestonePSTools" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

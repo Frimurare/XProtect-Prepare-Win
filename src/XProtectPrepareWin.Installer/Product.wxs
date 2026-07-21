@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package Name="XProtect Prepare Win"
+           Manufacturer="Ulf Holmström — Manvarg AB"
+           Version="$(var.ProductVersion)"
+           UpgradeCode="f691e30c-2a5a-40cd-b4e1-2b1b836128c0"
+           Compressed="yes"
+           InstallerVersion="500"
+           Scope="perMachine">
+
+    <SummaryInformation Description="XProtect Prepare Win — prepares Windows for Milestone XProtect installations" />
+
+    <!-- Same-version reinstall allowed on purpose: technicians re-run the
+         installer from a USB stick without checking versions first, and a
+         re-install must always Just Work. -->
+    <MajorUpgrade AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="A newer version of XProtect Prepare Win is already installed. Uninstall it first if you really want to go back." />
+
+    <Media Id="1" Cabinet="XPrepWin.cab" EmbedCab="yes" />
+
+    <!-- Minimal wizard: welcome/readme page (readme-license.rtf), progress,
+         finish. Silent install (/qn) is unaffected. -->
+    <ui:WixUI Id="WixUI_Minimal" />
+    <WixVariable Id="WixUILicenseRtf" Value="readme-license.rtf" />
+    <WixVariable Id="WixUIBannerBmp" Value="banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="dialog.bmp" />
+
+    <!-- Add/Remove Programs metadata -->
+    <Icon Id="AppIcon" SourceFile="..\XProtectPrepareWin\Assets\app.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/Frimurare/XProtect-Prepare-Win" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+
+    <!-- Optional desktop shortcut: on by default, disable with
+         msiexec /i ... DESKTOP_SHORTCUT=0 -->
+    <Property Id="DESKTOP_SHORTCUT" Value="1" Secure="yes" />
+
+    <!-- Finish dialog: optional "View the Readme" checkbox, checked by
+         default. Opens the installed Readme.txt via cmd start so it uses
+         whatever the machine's default .txt handler is. -->
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="View the Readme" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+    <CustomAction Id="LaunchReadme"
+                  Directory="INSTALLDIR"
+                  ExeCommand="[SystemFolder]cmd.exe /c start &quot;&quot; &quot;[#ReadmeTxt]&quot;"
+                  Execute="immediate" Impersonate="yes" Return="asyncNoWait" />
+    <UI>
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchReadme"
+               Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed" />
+    </UI>
+
+    <Feature Id="Main" Title="XProtect Prepare Win" Level="1">
+      <ComponentRef Id="MainExecutable" />
+      <ComponentRef Id="ReadmeComponent" />
+      <ComponentRef Id="StartMenuShortcut" />
+      <ComponentRef Id="DesktopShortcut" />
+    </Feature>
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLDIR" Name="XProtect Prepare Win" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder" />
+    <StandardDirectory Id="DesktopFolder" />
+
+    <!-- The whole app is ONE self-contained single-file exe (published with
+         PublishSingleFile + IncludeNativeLibrariesForSelfExtract), so no
+         generated ComponentGroups are needed — this is the entire payload. -->
+    <Component Id="MainExecutable" Directory="INSTALLDIR" Guid="*">
+      <File Id="MainExe" Source="bin\publish\XProtectPrepareWin.exe" KeyPath="yes" />
+    </Component>
+
+    <Component Id="ReadmeComponent" Directory="INSTALLDIR" Guid="*">
+      <File Id="ReadmeTxt" Source="Readme.txt" KeyPath="yes" />
+    </Component>
+
+    <Component Id="StartMenuShortcut" Directory="ProgramMenuFolder" Guid="*">
+      <!-- Non-advertised shortcut straight at the exe: Explorer then shows the
+           exe's own embedded icon. -->
+      <Shortcut Id="StartMenuSc"
+                Name="XProtect Prepare Win"
+                Description="Prepare this Windows machine for Milestone XProtect"
+                Target="[INSTALLDIR]XProtectPrepareWin.exe"
+                WorkingDirectory="INSTALLDIR" />
+      <RegistryValue Root="HKLM"
+                     Key="SOFTWARE\Manvarg\XProtectPrepareWin"
+                     Name="StartMenuShortcut" Type="integer" Value="1"
+                     KeyPath="yes" />
+    </Component>
+
+    <Component Id="DesktopShortcut" Directory="DesktopFolder" Guid="*"
+               Condition="DESKTOP_SHORTCUT = 1">
+      <Shortcut Id="DesktopSc"
+                Name="XProtect Prepare Win"
+                Description="Prepare this Windows machine for Milestone XProtect"
+                Target="[INSTALLDIR]XProtectPrepareWin.exe"
+                WorkingDirectory="INSTALLDIR" />
+      <RegistryValue Root="HKLM"
+                     Key="SOFTWARE\Manvarg\XProtectPrepareWin"
+                     Name="DesktopShortcut" Type="integer" Value="1"
+                     KeyPath="yes" />
+    </Component>
+
+  </Package>
+
+</Wix>

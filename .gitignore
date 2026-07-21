@@ -1,0 +1,19 @@
+# .NET build output
+bin/
+obj/
+publish/
+*.user
+
+# WiX build intermediates (final MSI lives in installer-package/, which IS tracked)
+src/XProtectPrepareWin.Installer/bin/
+src/XProtectPrepareWin.Installer/obj/
+src/XProtectPrepareWin.Installer/Generated/
+
+# IDE
+.vs/
+.idea/
+*.suo
+
+# OS cruft
+Thumbs.db
+.DS_Store

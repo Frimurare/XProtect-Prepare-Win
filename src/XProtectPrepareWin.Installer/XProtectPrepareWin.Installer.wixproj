@@ -1,0 +1,23 @@
+<Project Sdk="WixToolset.Sdk/5.0.2">
+  <PropertyGroup>
+    <ProductVersion Condition="'$(ProductVersion)' == ''">1.0.0</ProductVersion>
+    <OutputName>XProtectPrepareWin-$(ProductVersion)</OutputName>
+    <OutputType>Package</OutputType>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <SuppressIces>ICE61</SuppressIces>
+    <DefineConstants>$(DefineConstants);ProductVersion=$(ProductVersion)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.UI.wixext" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="bin\publish\XProtectPrepareWin.exe" Condition="Exists('bin\publish\XProtectPrepareWin.exe')" />
+    <Content Include="Readme.txt" />
+    <Content Include="readme-license.rtf" />
+    <Content Include="banner.bmp" />
+    <Content Include="dialog.bmp" />
+  </ItemGroup>
+
+</Project>
