@@ -167,6 +167,22 @@ public sealed class AppState
         _dispatcher = Application.Current.Dispatcher;
         foreach (var task in TaskCatalog.CreateAll())
             Tasks.Add(new TaskRowViewModel(task));
+
+        // Seed the rows with the persisted result of the last run, so the
+        // Dashboard rollup and Preparation page reflect reality on startup
+        // instead of showing everything as "Not run".
+        if (LastRun != null)
+        {
+            foreach (var row in Tasks)
+            {
+                var result = LastRun.Results.FirstOrDefault(r => r.Id == row.Task.Id);
+                if (result != null)
+                {
+                    row.Status = result.Status;
+                    row.Detail = result.Detail;
+                }
+            }
+        }
     }
 
     /// <summary>Thread-safe log append; marshals to the UI thread.</summary>
