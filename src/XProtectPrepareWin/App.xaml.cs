@@ -32,7 +32,7 @@ public partial class App : Application
     }
 
     /// <summary>
-    /// Headless mode: --silent [--with-ssh] [--drives &lt;storage|D,E&gt;].
+    /// Headless mode: --silent [--with-ssh] [--drives &lt;storage|D,E&gt;] [--ntp &lt;windows|global|cc&gt;].
     /// Runs on a dedicated thread (no dispatcher, no deadlock), then exits the process
     /// with 0 when nothing failed, 1 otherwise.
     /// </summary>
@@ -73,6 +73,15 @@ public partial class App : Application
         {
             if (args[i].Equals("--drives", StringComparison.OrdinalIgnoreCase))
                 settings.DrivesSelection = args[i + 1].Trim();
+            else if (args[i].Equals("--ntp", StringComparison.OrdinalIgnoreCase))
+            {
+                settings.NtpSource = args[i + 1].Trim().ToLowerInvariant();
+                // An explicit --ntp is an operator decision - persist it so later GUI
+                // runs check against the same source instead of "correcting" it back.
+                var persist = PrepSettings.Load();
+                persist.NtpSource = settings.NtpSource;
+                persist.Save();
+            }
         }
 
         var tasks = TaskCatalog.CreateAll()

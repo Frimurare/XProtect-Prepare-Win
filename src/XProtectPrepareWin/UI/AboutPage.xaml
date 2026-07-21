@@ -15,7 +15,7 @@
             <TextBlock Text="Built by Ulf Holmström, Happy Problem Solver at Manvarg AB, Sweden"
                        FontSize="13.5" HorizontalAlignment="Center" TextAlignment="Center"
                        TextWrapping="Wrap" Margin="0,20,0,0"/>
-            <TextBlock Text="Prepares Windows for XProtect installations by best practice — from an ex Milestone Solution Engineer."
+            <TextBlock Text="Prepares Windows for XProtect installations by Milestone best practice — check first, fix only what's needed."
                        FontSize="13" Foreground="{StaticResource MutedBrush}" HorizontalAlignment="Center"
                        TextAlignment="Center" TextWrapping="Wrap" Margin="0,8,0,0"/>
 

@@ -61,8 +61,11 @@
                                    RenderOptions.BitmapScalingMode="HighQuality"/>
                             <TextBlock Margin="0,10,0,0" FontSize="10.5" LineHeight="15"
                                        Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"
-                                       Text="Prepares XProtect by best practice&#x0a;by an ex Milestone Solution Engineer.&#x0a;Not affiliated with Milestone Systems."/>
+                                       Text="Prepares Windows for XProtect&#x0a;by Milestone best practice.&#x0a;Not affiliated with Milestone Systems."/>
                         </StackPanel>
+                        <RadioButton x:Name="NavExit" DockPanel.Dock="Bottom" Margin="0,0,0,14"
+                                     Style="{StaticResource NavItem}" GroupName="NavExitGroup"
+                                     Tag="&#xE7E8;" Content="Exit" Click="Exit_Click"/>
                         <StackPanel Margin="0,16,0,0">
                             <RadioButton x:Name="NavDashboard" Style="{StaticResource NavItem}" GroupName="Nav"
                                          Tag="&#xE80F;" Content="Dashboard" Checked="Nav_Checked"/>

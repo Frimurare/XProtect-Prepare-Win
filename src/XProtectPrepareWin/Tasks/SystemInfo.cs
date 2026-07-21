@@ -138,7 +138,7 @@ public static class SystemInfo
     /// product, preferring the main VMS entry over device packs, hotfixes and tools.</summary>
     private static string? FindXProtectProduct()
     {
-        var names = new List<string>();
+        var entries = new List<(string Name, string? Version)>();
         var roots = new[]
         {
             @"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
@@ -158,7 +158,7 @@ public static class SystemInfo
                         if (k?.GetValue("DisplayName") is string dn &&
                             (dn.Contains("XProtect", StringComparison.OrdinalIgnoreCase) ||
                              dn.Contains("Milestone", StringComparison.OrdinalIgnoreCase)))
-                            names.Add(dn.Trim());
+                            entries.Add((dn.Trim(), k.GetValue("DisplayVersion") as string));
                     }
                     catch { }
                 }
@@ -166,13 +166,44 @@ public static class SystemInfo
             catch { }
         }
 
-        if (names.Count == 0) return null;
-        return names
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderByDescending(n => n.Contains("XProtect", StringComparison.OrdinalIgnoreCase))
-            .ThenBy(n => n.Contains("Device Pack", StringComparison.OrdinalIgnoreCase) ? 1 : 0)
-            .ThenBy(n => n.Contains("Hotfix", StringComparison.OrdinalIgnoreCase) ? 1 : 0)
-            .ThenBy(n => n.Length)
-            .First();
+        // A Milestone install registers 20+ component entries (Log Server, Event Server,
+        // Data Collector, hotfixes...). Rank so the actual product wins, and never match
+        // ourselves, hotfixes, device packs or SDK tooling.
+        static int Rank(string n)
+        {
+            if (n.Contains("Prepare Win", StringComparison.OrdinalIgnoreCase)) return -1;
+            if (n.Contains("Hotfix", StringComparison.OrdinalIgnoreCase)) return -1;
+            if (n.Contains("Device Pack", StringComparison.OrdinalIgnoreCase)) return -1;
+            if (n.Contains("MIP SDK", StringComparison.OrdinalIgnoreCase)) return -1;
+            if (n.Contains("XProtect VMS", StringComparison.OrdinalIgnoreCase)) return 0;
+            if (n.Contains("Management Server", StringComparison.OrdinalIgnoreCase) &&
+                !n.Contains("Failover", StringComparison.OrdinalIgnoreCase)) return 1;
+            if (n.Contains("Recording Server", StringComparison.OrdinalIgnoreCase)) return 2;
+            if (n.Contains("Smart Client", StringComparison.OrdinalIgnoreCase)) return 3;
+            if (n.Contains("Event Server", StringComparison.OrdinalIgnoreCase)) return 4;
+            if (n.Contains("Management Client", StringComparison.OrdinalIgnoreCase)) return 5;
+            return 6;
+        }
+
+        var best = entries
+            .Where(e => Rank(e.Name) >= 0)
+            .OrderBy(e => Rank(e.Name))
+            .Cast<(string Name, string? Version)?>()
+            .FirstOrDefault();
+        if (best is null) return null;
+
+        var (name, version) = best.Value;
+        if (name.StartsWith("Milestone ", StringComparison.OrdinalIgnoreCase))
+            name = name["Milestone ".Length..];
+
+        // Append the release (e.g. DisplayVersion 25.3.x -> "2025 R3") when the entry
+        // name doesn't already carry it.
+        if (!System.Text.RegularExpressions.Regex.IsMatch(name, @"20\d\d\s*R\d") && version != null)
+        {
+            var m = System.Text.RegularExpressions.Regex.Match(version, @"^(\d\d)\.(\d)");
+            if (m.Success)
+                name += $" — 20{m.Groups[1].Value} R{m.Groups[2].Value}";
+        }
+        return name;
     }
 }

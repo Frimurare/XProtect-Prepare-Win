@@ -77,6 +77,9 @@ public sealed class PrepSettings
 {
     /// <summary>"" = Milestone folders only, "storage" = all non-OS drives, or "D,E".</summary>
     public string DrivesSelection { get; set; } = "storage";
+    /// <summary>Upstream NTP source key: "windows" (time.windows.com, default), "global",
+    /// or an ISO country code for that country's pool.ntp.org zone. See NtpCore.Sources.</summary>
+    public string NtpSource { get; set; } = "windows";
     public bool WithSsh { get; set; }
     public bool WithSnmp { get; set; }
     /// <summary>Restart explorer.exe after enabling seconds in the system clock.</summary>

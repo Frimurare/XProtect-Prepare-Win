@@ -13,12 +13,12 @@
     <RootNamespace>XProtectPrepareWin</RootNamespace>
     <ApplicationIcon>Assets/app.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <Company>Manvarg AB</Company>
     <Authors>Ulf Holmström</Authors>
     <Product>XProtect Prepare Win</Product>
     <Copyright>© Ulf Holmström, Manvarg AB, Sweden</Copyright>
-    <Description>Prepares Windows for Milestone XProtect installations — by best practice, from an ex Milestone Solution Engineer. Not affiliated with Milestone Systems A/S.</Description>
+    <Description>Prepares Windows for Milestone XProtect installations by best practice. Not affiliated with Milestone Systems A/S.</Description>
   </PropertyGroup>
 
   <ItemGroup>

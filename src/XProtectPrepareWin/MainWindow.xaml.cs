@@ -56,4 +56,6 @@ public partial class MainWindow : Window
     }
 
     private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void Exit_Click(object sender, RoutedEventArgs e) => Close();
 }

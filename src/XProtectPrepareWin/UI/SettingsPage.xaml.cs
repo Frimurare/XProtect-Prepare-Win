@@ -34,8 +34,29 @@ public partial class SettingsPage : UserControl
         SnmpToggle.IsChecked = settings.WithSnmp;
         RestartExplorerToggle.IsChecked = settings.RestartExplorer;
 
+        foreach (var (key, name) in NtpCore.Sources)
+            NtpSourceCombo.Items.Add(new ComboBoxItem { Content = name, Tag = key });
+        var idx = NtpCore.Sources.ToList().FindIndex(s => s.Key == settings.NtpSource);
+        NtpSourceCombo.SelectedIndex = idx >= 0 ? idx : 0;
+        UpdateNtpPreview();
+
         _initialized = true;
     }
+
+    private void NtpSourceCombo_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (!_initialized) return;
+        if (NtpSourceCombo.SelectedItem is ComboBoxItem { Tag: string key })
+        {
+            _state.Settings.NtpSource = key;
+            Save();
+            UpdateNtpPreview();
+        }
+    }
+
+    private void UpdateNtpPreview() =>
+        NtpPeersPreview.Text = "Peers: " + NtpCore.PeersFor(
+            (NtpSourceCombo.SelectedItem as ComboBoxItem)?.Tag as string ?? _state.Settings.NtpSource);
 
     private void Save() => _state.Settings.Save();
 

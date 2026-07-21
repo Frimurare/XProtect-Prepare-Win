@@ -4,11 +4,11 @@
 
 **Prepare XProtect. Not Windows.**
 
-Hi! I'm Ulf, an ex Milestone Solution Engineer from Sweden. Over the years I have prepared more Windows machines for XProtect than I can count, and I kept seeing the same thing: the install itself is easy — it's *Windows* that gets in the way. Defender scanning the media database, drives formatted with the wrong allocation unit size, OneDrive nagging on a recording server, the clock drifting because nobody set up NTP properly.
+Hi! I'm Ulf, from Sweden. Over the years I have prepared more Windows machines for XProtect than I can count, and I kept seeing the same thing: the install itself is easy — it's *Windows* that gets in the way. Defender scanning the media database, drives formatted with the wrong allocation unit size, OneDrive nagging on a recording server, the clock drifting because nobody set up NTP properly.
 
 I built this because I got tired of fixing the same fifteen things by hand on every new server. First it was a PowerShell script. Now it's this: a proper Windows app that any technician can run, that **checks everything first and only fixes what's actually wrong** — and tells you exactly what it did.
 
-> **Not affiliated with Milestone Systems A/S.** This tool is not made by, with, or on behalf of Milestone Systems A/S, and it is not endorsed or supported by them. It is a personal project by an ex Milestone Solution Engineer, built to help fellow technicians. "Milestone" and "XProtect" are trademarks of Milestone Systems A/S.
+> **Not affiliated with Milestone Systems A/S.** This tool is not made by, with, or on behalf of Milestone Systems A/S, and it is not endorsed or supported by them. It is a personal project by Ulf Holmström, built to help fellow technicians. "Milestone" and "XProtect" are trademarks of Milestone Systems A/S.
 
 ## The idea: check first, fix only what's needed
 

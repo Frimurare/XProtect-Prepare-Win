@@ -54,7 +54,8 @@ public static class NtpRecoveryTool
 
             await ctx.PowerShellAsync("Stop-Service w32time -Force -ErrorAction SilentlyContinue; Start-Sleep -Seconds 2", 120);
 
-            Reg.SetString(Registry.LocalMachine, NtpCore.ParametersKey, "NtpServer", NtpCore.Peers);
+            var peers = NtpCore.PeersFor(ctx.Settings.NtpSource);
+            Reg.SetString(Registry.LocalMachine, NtpCore.ParametersKey, "NtpServer", peers);
             Reg.SetString(Registry.LocalMachine, NtpCore.ParametersKey, "Type", isDomain ? "AllSync" : "NTP");
 
             await ctx.RunAsync("sc.exe", "config w32time start= auto", 60);
@@ -62,7 +63,7 @@ public static class NtpRecoveryTool
             Reg.SetDword(Registry.LocalMachine, NtpCore.ConfigKey, "AnnounceFlags", 10);
 
             await ctx.RunAsync("w32tm.exe",
-                $"/config /manualpeerlist:\"{NtpCore.Peers}\" /syncfromflags:{syncFlags} /reliable:yes /update", 120);
+                $"/config /manualpeerlist:\"{peers}\" /syncfromflags:{syncFlags} /reliable:yes /update", 120);
 
             // CRITICAL: w32tm /reliable:yes resets AnnounceFlags back to 5 - re-apply after w32tm.
             Reg.SetDword(Registry.LocalMachine, NtpCore.ConfigKey, "AnnounceFlags", 10);

@@ -3,11 +3,43 @@ using Microsoft.Win32;
 namespace XProtectPrepareWin.Tasks;
 
 /// <summary>Shared NTP constants and steps used by NtpServerTask and NtpRecoveryTool.</summary>
-internal static class NtpCore
+public static class NtpCore
 {
-    // Swedish NTP pool with the ,0x9 flags (client + special poll interval). The v1.9x
-    // scripts wrote plain commas without flags, which breaks w32time peer parsing.
-    public const string Peers = "0.se.pool.ntp.org,0x9 1.se.pool.ntp.org,0x9 2.se.pool.ntp.org,0x9 3.se.pool.ntp.org,0x9";
+    /// <summary>Selectable upstream time sources. Key is persisted in settings ("windows",
+    /// "global" or an ISO country code mapping to that country's pool.ntp.org zone).</summary>
+    public static readonly IReadOnlyList<(string Key, string DisplayName)> Sources = new List<(string, string)>
+    {
+        ("windows", "Windows default (time.windows.com)"),
+        ("global",  "Global pool (pool.ntp.org — picks nearest)"),
+        ("ar", "Argentina"), ("au", "Australia"), ("at", "Austria"), ("be", "Belgium"),
+        ("br", "Brazil"), ("ca", "Canada"), ("cl", "Chile"), ("cn", "China"),
+        ("cz", "Czechia"), ("dk", "Denmark"), ("fi", "Finland"), ("fr", "France"),
+        ("de", "Germany"), ("hk", "Hong Kong"), ("in", "India"), ("ie", "Ireland"),
+        ("it", "Italy"), ("jp", "Japan"), ("my", "Malaysia"), ("mx", "Mexico"),
+        ("nl", "Netherlands"), ("nz", "New Zealand"), ("no", "Norway"), ("pl", "Poland"),
+        ("pt", "Portugal"), ("sg", "Singapore"), ("za", "South Africa"), ("kr", "South Korea"),
+        ("es", "Spain"), ("se", "Sweden"), ("ch", "Switzerland"), ("tw", "Taiwan"),
+        ("th", "Thailand"), ("tr", "Turkey"), ("ae", "United Arab Emirates"),
+        ("uk", "United Kingdom"), ("us", "United States"),
+    };
+
+    /// <summary>Peer list for a source key, always with the ,0x9 flags (client + special
+    /// poll interval). The v1.9x scripts wrote plain commas without flags, which breaks
+    /// w32time peer parsing.</summary>
+    public static string PeersFor(string? key) => (key ?? "windows") switch
+    {
+        "windows" => "time.windows.com,0x9",
+        "global" => "0.pool.ntp.org,0x9 1.pool.ntp.org,0x9 2.pool.ntp.org,0x9 3.pool.ntp.org,0x9",
+        var cc => $"0.{cc}.pool.ntp.org,0x9 1.{cc}.pool.ntp.org,0x9 2.{cc}.pool.ntp.org,0x9 3.{cc}.pool.ntp.org,0x9",
+    };
+
+    public static string NameFor(string? key)
+    {
+        var k = key ?? "windows";
+        foreach (var (sourceKey, name) in Sources)
+            if (sourceKey == k) return name;
+        return k;
+    }
 
     public const string ParametersKey = @"SYSTEM\CurrentControlSet\Services\W32Time\Parameters";
     public const string ConfigKey = @"SYSTEM\CurrentControlSet\Services\W32Time\Config";
@@ -30,7 +62,7 @@ public sealed class NtpServerTask : IPrepTask
     public string Id => "ntp-server";
     public string Name => "NTP time server for cameras";
     public string Category => Categories.Ntp;
-    public string Description => "Windows Time as reliable NTP server (se.pool upstream, UDP 123 open, seconds in taskbar clock)";
+    public string Description => "Windows Time as reliable NTP server (upstream source selectable in Settings, UDP 123 open, seconds in taskbar clock)";
     public bool Optional => false;
     public bool CheckOnly => false;
 
@@ -63,9 +95,10 @@ public sealed class NtpServerTask : IPrepTask
         var compliant = 0;
         const int total = 8;
 
+        var expectedPeers = NtpCore.PeersFor(ctx.Settings.NtpSource);
         var peers = Reg.GetString(Registry.LocalMachine, NtpCore.ParametersKey, "NtpServer");
-        if (peers != null && peers.Contains(",0x9") && peers.Contains("se.pool.ntp.org")) compliant++;
-        else issues.Add("NTP peers not set to se.pool.ntp.org with ,0x9 flags");
+        if (string.Equals(peers?.Trim(), expectedPeers, StringComparison.OrdinalIgnoreCase)) compliant++;
+        else issues.Add($"NTP peers not set to {NtpCore.NameFor(ctx.Settings.NtpSource)} with ,0x9 flags");
 
         if (Reg.GetDword(Registry.LocalMachine, NtpCore.ConfigKey, "AnnounceFlags") == 10) compliant++;
         else issues.Add("AnnounceFlags is not 10");
@@ -106,15 +139,16 @@ public sealed class NtpServerTask : IPrepTask
 
         // AnnounceFlags=10 (0x0A): act as NTP server for the cameras but ALSO keep syncing
         // from upstream. 5 would make the box believe it IS a primary source and stop syncing.
+        var peers = NtpCore.PeersFor(ctx.Settings.NtpSource);
         Reg.SetDword(Registry.LocalMachine, NtpCore.ConfigKey, "AnnounceFlags", 10);
         Reg.SetDword(Registry.LocalMachine, NtpCore.NtpProviderKey, "Enabled", 1);
-        Reg.SetString(Registry.LocalMachine, NtpCore.ParametersKey, "NtpServer", NtpCore.Peers);
+        Reg.SetString(Registry.LocalMachine, NtpCore.ParametersKey, "NtpServer", peers);
         Reg.SetString(Registry.LocalMachine, NtpCore.ParametersKey, "Type", isDomain ? "AllSync" : "NTP");
 
         await ctx.RunAsync("sc.exe", "config w32time start= auto", 60);
 
         await ctx.RunAsync("w32tm.exe",
-            $"/config /manualpeerlist:\"{NtpCore.Peers}\" /syncfromflags:{syncFlags} /reliable:yes /update", 120);
+            $"/config /manualpeerlist:\"{peers}\" /syncfromflags:{syncFlags} /reliable:yes /update", 120);
 
         // CRITICAL: w32tm /reliable:yes silently resets AnnounceFlags back to 5, so it MUST
         // be re-applied AFTER w32tm - otherwise the server refuses to sync from upstream.

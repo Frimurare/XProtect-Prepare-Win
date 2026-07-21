@@ -40,6 +40,18 @@
                 </StackPanel>
             </Border>
 
+            <Border Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="NTP upstream time source" Style="{StaticResource SectionTitle}"/>
+                    <TextBlock Text="The time source this machine syncs from while acting as NTP server for your cameras. Pick the pool closest to the site."
+                               Style="{StaticResource MutedText}" Margin="0,4,0,12" TextWrapping="Wrap"/>
+                    <ComboBox x:Name="NtpSourceCombo" Width="340" HorizontalAlignment="Left"
+                              FontSize="13" SelectionChanged="NtpSourceCombo_Changed"/>
+                    <TextBlock x:Name="NtpPeersPreview" Style="{StaticResource MutedText}"
+                               Margin="0,8,0,0" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Border>
+
             <Border Style="{StaticResource Card}">
                 <StackPanel>
                     <TextBlock Text="Options" Style="{StaticResource SectionTitle}" Margin="0,0,0,14"/>

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.1 — 2026-07-21
+
+- **Selectable NTP upstream source** — new Settings dropdown (and `--ntp` CLI flag) with Windows default (`time.windows.com`), the global `pool.ntp.org` zone, and 37 country pools. The NTP check now verifies against your chosen source, so changing country is itself detected and corrected on the next run. Default is `time.windows.com`.
+- **Smarter XProtect detection** — the System page and Dashboard now report the actual installed product and release (e.g. "XProtect VMS 2025 R3") instead of whichever Milestone component happened to be found first in the registry. Hotfixes, device packs, MIP SDK and the tool itself are excluded from detection.
+- Dashboard now restores each task's status from the last run at startup (no more "Not run" on a prepared machine).
+- Toned-down branding: removed the "ex Milestone Solution Engineer" line throughout.
+
 All notable changes to XProtect Prepare Win are documented here.
 
 ## [1.0.0] — 2026-07-21

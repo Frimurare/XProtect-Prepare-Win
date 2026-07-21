@@ -72,7 +72,7 @@ IMPORTANT - NOT A MILESTONE PRODUCT
 -----------------------------------
 This tool is NOT made by, with, or on behalf of Milestone Systems
 A/S, and it is not endorsed or supported by them. It is a personal
-project by an ex Milestone Solution Engineer, built to help fellow
+project by Ulf Holmstrom, built to help fellow
 technicians get XProtect servers right the first time. "Milestone"
 and "XProtect" are trademarks of Milestone Systems A/S. Use at your
 own responsibility - though everything it does follows documented
