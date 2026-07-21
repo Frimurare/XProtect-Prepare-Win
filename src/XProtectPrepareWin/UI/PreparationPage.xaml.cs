@@ -14,7 +14,8 @@ public partial class PreparationPage : UserControl
         _state = state;
 
         var view = new ListCollectionView(_state.Tasks);
-        view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(TaskRowViewModel.Category)));
+        // Group on the localized category name so the group headers follow the UI language.
+        view.GroupDescriptions.Add(new PropertyGroupDescription(nameof(TaskRowViewModel.CategoryDisplay)));
         TaskList.ItemsSource = view;
 
         _state.RunStateChanged += UpdateButtons;

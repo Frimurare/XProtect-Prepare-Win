@@ -37,26 +37,26 @@ public partial class ToolsPage : UserControl
         _ntpBusy = true;
         NtpFixButton.IsEnabled = false;
         NtpRecheckButton.IsEnabled = false;
-        SetBanner(NtpBanner, NtpStatusText, UiPalette.GreyBg, UiPalette.Muted, "Checking NTP configuration…");
+        SetBanner(NtpBanner, NtpStatusText, UiPalette.GreyBg, UiPalette.Muted, Loc.T("tools.ntp.checkingCfg"));
         try
         {
             var (bugDetected, currentValue) = await Task.Run(() => NtpRecoveryTool.CheckAsync(Ctx()));
             if (bugDetected)
             {
                 SetBanner(NtpBanner, NtpStatusText, UiPalette.AmberBg, UiPalette.Amber,
-                    $"Bug detected — current value: {currentValue}");
+                    string.Format(Loc.T("tools.ntp.bugDetectedFmt"), currentValue));
                 NtpFixButton.IsEnabled = true;
             }
             else
             {
                 SetBanner(NtpBanner, NtpStatusText, UiPalette.GreenBg, UiPalette.Green,
-                    $"OK — {currentValue}");
+                    string.Format(Loc.T("tools.ntp.okFmt"), currentValue));
             }
         }
         catch (Exception ex)
         {
             SetBanner(NtpBanner, NtpStatusText, UiPalette.RedBg, UiPalette.Red,
-                "Check failed: " + ex.Message);
+                string.Format(Loc.T("tools.checkFailedFmt"), ex.Message));
         }
         finally
         {
@@ -71,14 +71,14 @@ public partial class ToolsPage : UserControl
         _ntpBusy = true;
         NtpFixButton.IsEnabled = false;
         NtpRecheckButton.IsEnabled = false;
-        SetBanner(NtpBanner, NtpStatusText, UiPalette.AccentBg, UiPalette.AccentLight, "Applying fix…");
+        SetBanner(NtpBanner, NtpStatusText, UiPalette.AccentBg, UiPalette.AccentLight, Loc.T("tools.ntp.applying"));
         try
         {
             bool ok = await Task.Run(() => NtpRecoveryTool.ApplyFixAsync(Ctx()));
             if (!ok)
             {
                 SetBanner(NtpBanner, NtpStatusText, UiPalette.RedBg, UiPalette.Red,
-                    "The fix could not be applied — see the Logs page.");
+                    Loc.T("tools.ntp.fixNotApplied"));
                 NtpRecheckButton.IsEnabled = true;
                 _ntpBusy = false;
                 return;
@@ -87,7 +87,7 @@ public partial class ToolsPage : UserControl
         catch (Exception ex)
         {
             SetBanner(NtpBanner, NtpStatusText, UiPalette.RedBg, UiPalette.Red,
-                "Fix failed: " + ex.Message);
+                string.Format(Loc.T("tools.ntp.fixFailedFmt"), ex.Message));
             NtpRecheckButton.IsEnabled = true;
             _ntpBusy = false;
             return;
@@ -110,27 +110,27 @@ public partial class ToolsPage : UserControl
         WuEnableButton.IsEnabled = false;
         WuDisableButton.IsEnabled = false;
         WuRefreshButton.IsEnabled = false;
-        SetBanner(WuBanner, WuStatusText, UiPalette.GreyBg, UiPalette.Muted, "Checking Windows Update state…");
+        SetBanner(WuBanner, WuStatusText, UiPalette.GreyBg, UiPalette.Muted, Loc.T("tools.wu.checkingState"));
         try
         {
             bool enabled = await Task.Run(() => WindowsUpdateTool.IsEnabledAsync(Ctx()));
             if (enabled)
             {
                 SetBanner(WuBanner, WuStatusText, UiPalette.AmberBg, UiPalette.Amber,
-                    "Windows Update is ENABLED.");
+                    Loc.T("tools.wu.enabled"));
                 WuDisableButton.IsEnabled = true;
             }
             else
             {
                 SetBanner(WuBanner, WuStatusText, UiPalette.GreenBg, UiPalette.Green,
-                    "Windows Update is DISABLED.");
+                    Loc.T("tools.wu.disabled"));
                 WuEnableButton.IsEnabled = true;
             }
         }
         catch (Exception ex)
         {
             SetBanner(WuBanner, WuStatusText, UiPalette.RedBg, UiPalette.Red,
-                "Check failed: " + ex.Message);
+                string.Format(Loc.T("tools.checkFailedFmt"), ex.Message));
             WuEnableButton.IsEnabled = true;
             WuDisableButton.IsEnabled = true;
         }
@@ -164,7 +164,7 @@ public partial class ToolsPage : UserControl
         WuDisableButton.IsEnabled = false;
         WuRefreshButton.IsEnabled = false;
         SetBanner(WuBanner, WuStatusText, UiPalette.AccentBg, UiPalette.AccentLight,
-            enabled ? "Enabling Windows Update…" : "Disabling Windows Update…");
+            enabled ? Loc.T("tools.wu.enabling") : Loc.T("tools.wu.disabling"));
         try
         {
             await Task.Run(() => WindowsUpdateTool.SetEnabledAsync(Ctx(), enabled));
@@ -172,7 +172,7 @@ public partial class ToolsPage : UserControl
         catch (Exception ex)
         {
             SetBanner(WuBanner, WuStatusText, UiPalette.RedBg, UiPalette.Red,
-                "Change failed: " + ex.Message);
+                string.Format(Loc.T("tools.wu.changeFailedFmt"), ex.Message));
             WuRefreshButton.IsEnabled = true;
             _wuBusy = false;
             return;
@@ -190,16 +190,16 @@ public partial class ToolsPage : UserControl
     private async void ReportButton_Click(object sender, RoutedEventArgs e)
     {
         ReportButton.IsEnabled = false;
-        ReportStatusText.Text = "Running check-only sweep… this can take a few minutes.";
+        ReportStatusText.Text = Loc.T("tools.report.running");
         try
         {
             var path = await _state.GenerateSystemReportAsync();
-            ReportStatusText.Text = "Report written: " + path;
+            ReportStatusText.Text = string.Format(Loc.T("tools.report.writtenFmt"), path);
             AppState.OpenExternal(path);
         }
         catch (Exception ex)
         {
-            ReportStatusText.Text = "Report failed: " + ex.Message;
+            ReportStatusText.Text = string.Format(Loc.T("tools.report.failedFmt"), ex.Message);
         }
         finally
         {

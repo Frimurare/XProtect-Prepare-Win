@@ -3,6 +3,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using XProtectPrepareWin.Tasks;
+using XProtectPrepareWin.UI;
 
 namespace XProtectPrepareWin;
 
@@ -14,9 +15,14 @@ public partial class App : Application
 
         if (e.Args.Any(a => a.Equals("--silent", StringComparison.OrdinalIgnoreCase)))
         {
+            Loc.Init("en"); // silent runs log in English
             RunSilentAndExit(e.Args);
             return; // never reached - RunSilentAndExit calls Environment.Exit
         }
+
+        // Language and theme must be resolved before any window is created.
+        Loc.Init(PrepSettings.Load().Language);
+        ThemeManager.Init();
 
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         var window = new MainWindow();
@@ -24,9 +30,15 @@ public partial class App : Application
         window.Show();
     }
 
+    protected override void OnExit(ExitEventArgs e)
+    {
+        ThemeManager.Shutdown();
+        base.OnExit(e);
+    }
+
     private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
-        MessageBox.Show("Unexpected error: " + e.Exception.Message,
+        MessageBox.Show(string.Format(Loc.T("app.unexpectedErrorFmt"), e.Exception.Message),
             "XProtect Prepare Win", MessageBoxButton.OK, MessageBoxImage.Error);
         e.Handled = true;
     }

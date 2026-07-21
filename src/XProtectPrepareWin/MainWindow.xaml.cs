@@ -14,13 +14,13 @@ public partial class MainWindow : Window
         InitializeComponent();
         _state = AppState.Current;
 
-        _pages["Dashboard"] = new DashboardPage(_state);
-        _pages["System"] = new SystemPage(_state);
-        _pages["Preparation"] = new PreparationPage(_state);
-        _pages["Tools"] = new ToolsPage(_state);
-        _pages["Logs"] = new LogsPage(_state);
-        _pages["Settings"] = new SettingsPage(_state);
-        _pages["About"] = new AboutPage();
+        _pages["NavDashboard"] = new DashboardPage(_state);
+        _pages["NavSystem"] = new SystemPage(_state);
+        _pages["NavPreparation"] = new PreparationPage(_state);
+        _pages["NavTools"] = new ToolsPage(_state);
+        _pages["NavLogs"] = new LogsPage(_state);
+        _pages["NavSettings"] = new SettingsPage(_state);
+        _pages["NavAbout"] = new AboutPage();
 
         NavDashboard.IsChecked = true;
 
@@ -31,7 +31,18 @@ public partial class MainWindow : Window
             MaxButton.Content = WindowState == WindowState.Maximized ? "\uE923" : "\uE922"; // restore / maximize
         };
 
+        // Status badge brushes are provided by code (UiPalette), so nudge every
+        // row to re-resolve them when the Windows light/dark preference flips.
+        ThemeManager.ThemeChanged += OnThemeChanged;
+        Closed += (_, _) => ThemeManager.ThemeChanged -= OnThemeChanged;
+
         Loaded += MainWindow_Loaded;
+    }
+
+    private void OnThemeChanged()
+    {
+        foreach (var row in _state.Tasks)
+            row.RefreshTheme();
     }
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -41,7 +52,8 @@ public partial class MainWindow : Window
 
     private void Nav_Checked(object sender, RoutedEventArgs e)
     {
-        if (sender is RadioButton rb && rb.Content is string key && _pages.TryGetValue(key, out var page))
+        // Keyed on the control name (content strings are localized).
+        if (sender is RadioButton rb && _pages.TryGetValue(rb.Name, out var page))
             PageHost.Content = page;
     }
 

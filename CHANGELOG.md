@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2 "Happy Tekkie" — 2026-07-22
+
+- **Light & dark theme, following Windows** — the app now reads the Windows app-theme setting and matches it, live: switch Windows between dark and light and the app follows without a restart.
+- **Four languages** — English, Svenska, Dansk and Norsk. Follows the Windows display language by default, with an override in Settings.
+- **Dark-themed dropdowns** — the NTP source picker (and all combo boxes) now match the theme instead of the bare Windows look.
+- README overhauled with real screenshots of every page.
+
 ## 1.0.1 — 2026-07-21
 
 - **Selectable NTP upstream source** — new Settings dropdown (and `--ntp` CLI flag) with Windows default (`time.windows.com`), the global `pool.ntp.org` zone, and 37 country pools. The NTP check now verifies against your chosen source, so changing country is itself detected and corrected on the next run. Default is `time.windows.com`.

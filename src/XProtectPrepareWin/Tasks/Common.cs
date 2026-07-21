@@ -80,6 +80,8 @@ public sealed class PrepSettings
     /// <summary>Upstream NTP source key: "windows" (time.windows.com, default), "global",
     /// or an ISO country code for that country's pool.ntp.org zone. See NtpCore.Sources.</summary>
     public string NtpSource { get; set; } = "windows";
+    /// <summary>UI language: "auto" (follow Windows, default), "en", "sv", "da" or "no".</summary>
+    public string Language { get; set; } = "auto";
     public bool WithSsh { get; set; }
     public bool WithSnmp { get; set; }
     /// <summary>Restart explorer.exe after enabling seconds in the system clock.</summary>

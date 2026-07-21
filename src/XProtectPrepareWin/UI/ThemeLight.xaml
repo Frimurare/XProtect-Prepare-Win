@@ -1,0 +1,38 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- ============ Light palette (Windows apps-light equivalent) ============ -->
+    <SolidColorBrush x:Key="BgBrush" Color="#F4F6FA"/>
+    <SolidColorBrush x:Key="SidebarBrush" Color="#E9EDF4"/>
+    <SolidColorBrush x:Key="CardBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="CardBorderBrush" Color="#D7DEE9"/>
+    <SolidColorBrush x:Key="AccentBrush" Color="#2B6CEB"/>
+    <SolidColorBrush x:Key="AccentHoverBrush" Color="#2159C8"/>
+    <SolidColorBrush x:Key="AccentLightBrush" Color="#2559C7"/>
+    <SolidColorBrush x:Key="GreenBrush" Color="#2EA34E"/>
+    <SolidColorBrush x:Key="AmberBrush" Color="#B97E12"/>
+    <SolidColorBrush x:Key="RedBrush" Color="#D0343C"/>
+    <SolidColorBrush x:Key="TealBrush" Color="#0E8A7D"/>
+    <SolidColorBrush x:Key="TextBrush" Color="#1A2233"/>
+    <SolidColorBrush x:Key="MutedBrush" Color="#5A6478"/>
+    <SolidColorBrush x:Key="InputBrush" Color="#FBFCFE"/>
+    <SolidColorBrush x:Key="HoverBrush" Color="#E8EDF6"/>
+    <SolidColorBrush x:Key="NavSelectedBrush" Color="#1F2B6CEB"/>
+
+    <!-- Control detail colors -->
+    <SolidColorBrush x:Key="CloseHoverBrush" Color="#D9313C"/>
+    <SolidColorBrush x:Key="SubtleHoverBrush" Color="#0D1A2233"/>
+    <SolidColorBrush x:Key="CheckBorderBrush" Color="#A9B4C9"/>
+    <SolidColorBrush x:Key="SwitchTrackBrush" Color="#C9D2E2"/>
+    <SolidColorBrush x:Key="SwitchKnobBrush" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="ScrollThumbBrush" Color="#C0C9DA"/>
+
+    <!-- Status badge background tints -->
+    <SolidColorBrush x:Key="GreyBgBrush" Color="#145A6478"/>
+    <SolidColorBrush x:Key="AccentBgBrush" Color="#172B6CEB"/>
+    <SolidColorBrush x:Key="GreenBgBrush" Color="#182EA34E"/>
+    <SolidColorBrush x:Key="AmberBgBrush" Color="#1FB97E12"/>
+    <SolidColorBrush x:Key="RedBgBrush" Color="#18D0343C"/>
+    <SolidColorBrush x:Key="TealBgBrush" Color="#180E8A7D"/>
+
+</ResourceDictionary>

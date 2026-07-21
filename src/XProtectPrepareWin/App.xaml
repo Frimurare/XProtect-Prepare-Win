@@ -6,6 +6,8 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/UI/Theme.xaml"/>
+                <!-- Default palette; ThemeManager swaps this for ThemeLight.xaml when Windows uses light apps mode. -->
+                <ResourceDictionary Source="pack://application:,,,/UI/ThemeDark.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

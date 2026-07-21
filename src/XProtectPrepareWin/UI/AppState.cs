@@ -11,30 +11,36 @@ using XProtectPrepareWin.Tasks;
 
 namespace XProtectPrepareWin.UI;
 
-/// <summary>Frozen brushes used by the code-driven status badges.</summary>
+/// <summary>
+/// Brushes used by the code-driven status badges. Resolved from the active theme
+/// dictionary (ThemeDark/ThemeLight) so they follow light/dark switches; the
+/// hex values are dark-theme fallbacks in case a resource is ever missing.
+/// </summary>
 internal static class UiPalette
 {
-    public static readonly SolidColorBrush Text = Make("#E8ECF4");
-    public static readonly SolidColorBrush Muted = Make("#8A94AD");
-    public static readonly SolidColorBrush Accent = Make("#2B6CEB");
-    public static readonly SolidColorBrush AccentLight = Make("#5B8DEF");
-    public static readonly SolidColorBrush Green = Make("#35C759");
-    public static readonly SolidColorBrush Amber = Make("#F5A623");
-    public static readonly SolidColorBrush Red = Make("#E5484D");
-    public static readonly SolidColorBrush Teal = Make("#2EC4B6");
+    public static SolidColorBrush Text => Get("TextBrush", "#E8ECF4");
+    public static SolidColorBrush Muted => Get("MutedBrush", "#8A94AD");
+    public static SolidColorBrush Accent => Get("AccentBrush", "#2B6CEB");
+    public static SolidColorBrush AccentLight => Get("AccentLightBrush", "#5B8DEF");
+    public static SolidColorBrush Green => Get("GreenBrush", "#35C759");
+    public static SolidColorBrush Amber => Get("AmberBrush", "#F5A623");
+    public static SolidColorBrush Red => Get("RedBrush", "#E5484D");
+    public static SolidColorBrush Teal => Get("TealBrush", "#2EC4B6");
 
-    public static readonly SolidColorBrush GreyBg = Make("#1A8A94AD");
-    public static readonly SolidColorBrush AccentBg = Make("#1F2B6CEB");
-    public static readonly SolidColorBrush GreenBg = Make("#2035C759");
-    public static readonly SolidColorBrush AmberBg = Make("#20F5A623");
-    public static readonly SolidColorBrush RedBg = Make("#20E5484D");
-    public static readonly SolidColorBrush TealBg = Make("#202EC4B6");
+    public static SolidColorBrush GreyBg => Get("GreyBgBrush", "#1A8A94AD");
+    public static SolidColorBrush AccentBg => Get("AccentBgBrush", "#1F2B6CEB");
+    public static SolidColorBrush GreenBg => Get("GreenBgBrush", "#2035C759");
+    public static SolidColorBrush AmberBg => Get("AmberBgBrush", "#20F5A623");
+    public static SolidColorBrush RedBg => Get("RedBgBrush", "#20E5484D");
+    public static SolidColorBrush TealBg => Get("TealBgBrush", "#202EC4B6");
 
-    private static SolidColorBrush Make(string hex)
+    private static SolidColorBrush Get(string key, string fallbackHex)
     {
-        var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(hex));
-        brush.Freeze();
-        return brush;
+        if (Application.Current?.TryFindResource(key) is SolidColorBrush brush)
+            return brush;
+        var fallback = new SolidColorBrush((Color)ColorConverter.ConvertFromString(fallbackHex));
+        fallback.Freeze();
+        return fallback;
     }
 }
 
@@ -49,9 +55,12 @@ public sealed class TaskRowViewModel : INotifyPropertyChanged
         _included = !task.Optional;
     }
 
-    public string Name => Task.Name;
-    public string Description => Task.Description;
+    public string Name => Loc.T($"task.{Task.Id}.name", Task.Name);
+    public string Description => Loc.T($"task.{Task.Id}.desc", Task.Description);
+    /// <summary>Engine category (English) - used for matching, never shown directly.</summary>
     public string Category => Task.Category;
+    /// <summary>Localized category name for group headers.</summary>
+    public string CategoryDisplay => Loc.T($"cat.{Task.Category}", Task.Category);
     public bool Optional => Task.Optional;
 
     private bool _included;
@@ -97,15 +106,15 @@ public sealed class TaskRowViewModel : INotifyPropertyChanged
 
     public string StatusText => _status switch
     {
-        RunStatus.Pending => "Not run",
-        RunStatus.Checking => "Checking…",
-        RunStatus.Applying => "Applying…",
-        RunStatus.AlreadyDone => "Already done",
-        RunStatus.CorrectedNow => "Corrected now",
-        RunStatus.Warning => "Warning",
-        RunStatus.Failed => "Failed",
-        RunStatus.Skipped => "Skipped",
-        RunStatus.NotApplicable => "N/A",
+        RunStatus.Pending => Loc.T("status.notrun"),
+        RunStatus.Checking => Loc.T("status.checking"),
+        RunStatus.Applying => Loc.T("status.applying"),
+        RunStatus.AlreadyDone => Loc.T("status.alreadydone"),
+        RunStatus.CorrectedNow => Loc.T("status.corrected"),
+        RunStatus.Warning => Loc.T("status.warning"),
+        RunStatus.Failed => Loc.T("status.failed"),
+        RunStatus.Skipped => Loc.T("status.skipped"),
+        RunStatus.NotApplicable => Loc.T("status.na"),
         _ => "",
     };
 
@@ -130,6 +139,9 @@ public sealed class TaskRowViewModel : INotifyPropertyChanged
     };
 
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    /// <summary>Re-raise all bindings so status brushes re-resolve after a theme switch.</summary>
+    public void RefreshTheme() => RaiseAll();
 
     private void OnPropertyChanged([CallerMemberName] string? name = null) =>
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

@@ -10,7 +10,7 @@ public partial class AboutPage : UserControl
     public AboutPage()
     {
         InitializeComponent();
-        VersionText.Text = "Version " + AppVersion.Version;
+        VersionText.Text = Loc.T("about.version") + " " + AppVersion.Version;
     }
 
     private void GitHubLink_RequestNavigate(object sender, RequestNavigateEventArgs e)

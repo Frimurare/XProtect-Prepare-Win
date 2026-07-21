@@ -1,11 +1,12 @@
 <UserControl x:Class="XProtectPrepareWin.UI.ToolsPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Foreground="{StaticResource TextBrush}">
+             xmlns:l="clr-namespace:XProtectPrepareWin.UI"
+             Foreground="{DynamicResource TextBrush}">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <StackPanel Margin="30,24,30,24" MaxWidth="1500">
-            <TextBlock Text="Tools" Style="{StaticResource PageTitle}"/>
-            <TextBlock Text="Standalone utilities for XProtect servers."
+            <TextBlock Text="{l:Loc nav.tools}" Style="{StaticResource PageTitle}"/>
+            <TextBlock Text="{l:Loc tools.subtitle}"
                        Style="{StaticResource PageSub}" Margin="0,6,0,18"/>
 
             <Grid>
@@ -24,22 +25,22 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="15"
-                                       Foreground="{StaticResource AccentLightBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Text="NTP Recovery" Style="{StaticResource SectionTitle}" Margin="10,0,0,0"
+                                       Foreground="{DynamicResource AccentLightBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{l:Loc tools.ntp.title}" Style="{StaticResource SectionTitle}" Margin="10,0,0,0"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBlock Text="Detects and fixes the Windows time service polling bug that lets server clocks drift."
+                        <TextBlock Text="{l:Loc tools.ntp.desc}"
                                    Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                        <Border x:Name="NtpBanner" Background="#1A8A94AD" CornerRadius="8" Padding="12,8"
+                        <Border x:Name="NtpBanner" Background="{DynamicResource GreyBgBrush}" CornerRadius="8" Padding="12,8"
                                 Margin="0,0,0,12">
-                            <TextBlock x:Name="NtpStatusText" Text="Checking…" FontSize="12.5"
-                                       Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
+                            <TextBlock x:Name="NtpStatusText" Text="{l:Loc status.checking}" FontSize="12.5"
+                                       Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
                         </Border>
                         <StackPanel Orientation="Horizontal">
                             <Button x:Name="NtpFixButton" Style="{StaticResource PrimaryButton}"
-                                    Content="Apply fix" IsEnabled="False" Click="NtpFixButton_Click"/>
+                                    Content="{l:Loc tools.ntp.apply}" IsEnabled="False" Click="NtpFixButton_Click"/>
                             <Button x:Name="NtpRecheckButton" Style="{StaticResource SecondaryButton}"
-                                    Content="Re-check" Margin="10,0,0,0" Click="NtpRecheckButton_Click"/>
+                                    Content="{l:Loc tools.ntp.recheck}" Margin="10,0,0,0" Click="NtpRecheckButton_Click"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -49,24 +50,24 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="&#xE895;" FontFamily="Segoe MDL2 Assets" FontSize="15"
-                                       Foreground="{StaticResource AccentLightBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Text="Windows Update" Style="{StaticResource SectionTitle}" Margin="10,0,0,0"
+                                       Foreground="{DynamicResource AccentLightBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{l:Loc tools.wu.title}" Style="{StaticResource SectionTitle}" Margin="10,0,0,0"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBlock Text="Turn Windows Update on or off. Keep it off on recording servers during business hours - drain updates before go-live instead."
+                        <TextBlock Text="{l:Loc tools.wu.desc}"
                                    Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,10"/>
-                        <Border x:Name="WuBanner" Background="#1A8A94AD" CornerRadius="8" Padding="12,8"
+                        <Border x:Name="WuBanner" Background="{DynamicResource GreyBgBrush}" CornerRadius="8" Padding="12,8"
                                 Margin="0,0,0,12">
-                            <TextBlock x:Name="WuStatusText" Text="Checking…" FontSize="12.5"
-                                       Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
+                            <TextBlock x:Name="WuStatusText" Text="{l:Loc status.checking}" FontSize="12.5"
+                                       Foreground="{DynamicResource MutedBrush}" TextWrapping="Wrap"/>
                         </Border>
                         <StackPanel Orientation="Horizontal">
                             <Button x:Name="WuEnableButton" Style="{StaticResource SecondaryButton}"
-                                    Content="Enable" IsEnabled="False" Click="WuEnableButton_Click"/>
+                                    Content="{l:Loc tools.wu.enable}" IsEnabled="False" Click="WuEnableButton_Click"/>
                             <Button x:Name="WuDisableButton" Style="{StaticResource SecondaryButton}"
-                                    Content="Disable" IsEnabled="False" Margin="10,0,0,0" Click="WuDisableButton_Click"/>
+                                    Content="{l:Loc tools.wu.disable}" IsEnabled="False" Margin="10,0,0,0" Click="WuDisableButton_Click"/>
                             <Button x:Name="WuRefreshButton" Style="{StaticResource SecondaryButton}"
-                                    Content="Refresh" Margin="10,0,0,0" Click="WuRefreshButton_Click"/>
+                                    Content="{l:Loc tools.wu.refresh}" Margin="10,0,0,0" Click="WuRefreshButton_Click"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>
@@ -76,13 +77,13 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="15"
-                                       Foreground="{StaticResource AccentLightBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Text="MilestonePSTools" Style="{StaticResource SectionTitle}" Margin="10,0,0,0"
+                                       Foreground="{DynamicResource AccentLightBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{l:Loc tools.pstools.title}" Style="{StaticResource SectionTitle}" Margin="10,0,0,0"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBlock Text="Opens a PowerShell window with the MilestonePSTools module loaded, ready for scripting against the VMS."
+                        <TextBlock Text="{l:Loc tools.pstools.desc}"
                                    Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,12"/>
-                        <Button Style="{StaticResource PrimaryButton}" Content="Open MilestonePSTools"
+                        <Button Style="{StaticResource PrimaryButton}" Content="{l:Loc dash.openPstools}"
                                 HorizontalAlignment="Left" Click="OpenPSToolsButton_Click"/>
                     </StackPanel>
                 </Border>
@@ -92,13 +93,13 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="&#xE838;" FontFamily="Segoe MDL2 Assets" FontSize="15"
-                                       Foreground="{StaticResource AccentLightBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Text="Log folder" Style="{StaticResource SectionTitle}" Margin="10,0,0,0"
+                                       Foreground="{DynamicResource AccentLightBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{l:Loc tools.logfolder.title}" Style="{StaticResource SectionTitle}" Margin="10,0,0,0"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBlock Text="All preparation logs and system reports are written to C:\Milestonecheck-ulfh."
+                        <TextBlock Text="{l:Loc tools.logfolder.desc}"
                                    Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,12"/>
-                        <Button Style="{StaticResource SecondaryButton}" Content="Open log folder"
+                        <Button Style="{StaticResource SecondaryButton}" Content="{l:Loc tools.logfolder.open}"
                                 HorizontalAlignment="Left" Click="OpenLogFolderButton_Click"/>
                     </StackPanel>
                 </Border>
@@ -108,17 +109,17 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                             <TextBlock Text="&#xE9D9;" FontFamily="Segoe MDL2 Assets" FontSize="15"
-                                       Foreground="{StaticResource AccentLightBrush}" VerticalAlignment="Center"/>
-                            <TextBlock Text="System report" Style="{StaticResource SectionTitle}" Margin="10,0,0,0"
+                                       Foreground="{DynamicResource AccentLightBrush}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{l:Loc tools.report.title}" Style="{StaticResource SectionTitle}" Margin="10,0,0,0"
                                        VerticalAlignment="Center"/>
                         </StackPanel>
-                        <TextBlock Text="Runs a check-only sweep of every preparation task and writes a text report - nothing is changed. Handy as a pre-install audit or for handover documentation."
+                        <TextBlock Text="{l:Loc tools.report.desc}"
                                    Style="{StaticResource MutedText}" TextWrapping="Wrap" Margin="0,0,0,12"/>
                         <StackPanel Orientation="Horizontal">
                             <Button x:Name="ReportButton" Style="{StaticResource PrimaryButton}"
-                                    Content="Generate system report" Click="ReportButton_Click"/>
+                                    Content="{l:Loc tools.report.generate}" Click="ReportButton_Click"/>
                             <TextBlock x:Name="ReportStatusText" Text="" FontSize="12"
-                                       Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource MutedBrush}" VerticalAlignment="Center"
                                        Margin="14,0,0,0" TextTrimming="CharacterEllipsis"/>
                         </StackPanel>
                     </StackPanel>

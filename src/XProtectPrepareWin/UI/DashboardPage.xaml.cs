@@ -14,7 +14,7 @@ public partial class DashboardPage : UserControl
     private readonly AppState _state;
     private readonly List<CategoryRowViewModel> _categories = new();
 
-    private static readonly (string Name, string Subtitle)[] CategoryMeta =
+    private static readonly (string Name, string SubtitleFallback)[] CategoryMeta =
     {
         (Categories.Antivirus, "Windows Defender exclusions configured"),
         (Categories.Storage, "Drives verified and optimized for recording"),
@@ -31,9 +31,11 @@ public partial class DashboardPage : UserControl
         InitializeComponent();
         _state = state;
 
-        foreach (var (name, subtitle) in CategoryMeta)
+        foreach (var (name, subtitleFallback) in CategoryMeta)
         {
-            var vm = new CategoryRowViewModel(name, subtitle);
+            var vm = new CategoryRowViewModel(
+                Loc.T($"cat.{name}", name),
+                Loc.T($"catsub.{name}", subtitleFallback));
             foreach (var row in _state.Tasks.Where(r => r.Category == name))
                 vm.Tasks.Add(row);
             _categories.Add(vm);
@@ -43,6 +45,7 @@ public partial class DashboardPage : UserControl
         _state.SnapshotLoaded += RefreshCards;
         _state.RunStateChanged += RefreshAll;
         _state.TaskStatusesChanged += RefreshStatuses;
+        ThemeManager.ThemeChanged += RefreshStatuses;
         Loaded += (_, _) => RefreshAll();
 
         RefreshAll();
@@ -59,9 +62,9 @@ public partial class DashboardPage : UserControl
         var snap = _state.Snapshot;
         if (snap == null)
         {
-            OsValueText.Text = "Detecting…";
+            OsValueText.Text = Loc.T("common.detecting");
             OsSubText.Text = "";
-            XpValueText.Text = "Detecting…";
+            XpValueText.Text = Loc.T("common.detecting");
             XpSubText.Text = "";
         }
         else
@@ -72,27 +75,27 @@ public partial class DashboardPage : UserControl
             if (snap.XProtectProduct != null)
             {
                 XpValueText.Text = snap.XProtectProduct;
-                XpSubText.Text = "Detected on this machine";
+                XpSubText.Text = Loc.T("dash.detectedHere");
             }
             else
             {
-                XpValueText.Text = "Not installed";
-                XpSubText.Text = "Ready to prepare";
+                XpValueText.Text = Loc.T("dash.notInstalled");
+                XpSubText.Text = Loc.T("dash.readyToPrepare");
             }
         }
 
         var lastRun = _state.LastRun;
         if (lastRun == null)
         {
-            LastRunValueText.Text = "Never";
-            LastRunSubText.Text = "No preparation run yet";
-            RunButtonText.Text = "Run preparation";
+            LastRunValueText.Text = Loc.T("dash.never");
+            LastRunSubText.Text = Loc.T("dash.noRunYet");
+            RunButtonText.Text = Loc.T("dash.run");
         }
         else
         {
             LastRunValueText.Text = lastRun.StartedLocal.ToString("d MMM yyyy, HH:mm");
-            LastRunSubText.Text = $"Duration: {lastRun.Duration:mm\\:ss}";
-            RunButtonText.Text = "Run preparation again";
+            LastRunSubText.Text = string.Format(Loc.T("dash.durationFmt"), lastRun.Duration.ToString("mm\\:ss"));
+            RunButtonText.Text = Loc.T("dash.runAgain");
         }
 
         RunButton.IsEnabled = !_state.IsRunning;
@@ -136,23 +139,23 @@ public partial class DashboardPage : UserControl
 
         if (_state.IsRunning)
         {
-            ReadyTitleText.Text = "Preparing…";
-            ReadySubText.Text = "Tasks are being checked and corrected. You can follow the details on the Preparation and Logs pages.";
+            ReadyTitleText.Text = Loc.T("dash.preparing");
+            ReadySubText.Text = Loc.T("dash.preparingSub");
         }
         else if (_state.LastRun == null)
         {
-            ReadyTitleText.Text = "No preparation run yet";
-            ReadySubText.Text = "Run preparation to optimize this server for XProtect.";
+            ReadyTitleText.Text = Loc.T("dash.noRunYet");
+            ReadySubText.Text = Loc.T("dash.runToOptimize");
         }
         else if (_state.LastRun.AllOk)
         {
-            ReadyTitleText.Text = "🎉 System ready!";
-            ReadySubText.Text = "Your server is optimized and ready for XProtect installation.";
+            ReadyTitleText.Text = Loc.T("dash.systemReady");
+            ReadySubText.Text = Loc.T("dash.systemReadySub");
         }
         else
         {
-            ReadyTitleText.Text = "Completed with issues";
-            ReadySubText.Text = $"{_state.LastRun.FailedCount} task(s) failed — check the Preparation page and the log.";
+            ReadyTitleText.Text = Loc.T("dash.issuesTitle");
+            ReadySubText.Text = string.Format(Loc.T("dash.issuesSubFmt"), _state.LastRun.FailedCount);
         }
 
         var logFile = _state.LastRun?.LogFile;
@@ -201,15 +204,15 @@ public partial class DashboardPage : UserControl
         var source = _state.LatestLogFile();
         if (source == null)
         {
-            MessageBox.Show("No preparation log exists yet. Run a preparation first.",
+            MessageBox.Show(Loc.T("dash.noLogYet"),
                 "XProtect Prepare Win", MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
         var dialog = new SaveFileDialog
         {
-            Title = "Export preparation log",
+            Title = Loc.T("dash.exportTitle"),
             FileName = Path.GetFileName(source),
-            Filter = "Log files (*.txt)|*.txt|All files (*.*)|*.*",
+            Filter = Loc.T("dash.logFilter"),
         };
         if (dialog.ShowDialog(Window.GetWindow(this)) == true)
         {
@@ -219,7 +222,7 @@ public partial class DashboardPage : UserControl
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Could not export the log: " + ex.Message,
+                MessageBox.Show(string.Format(Loc.T("dash.exportFailedFmt"), ex.Message),
                     "XProtect Prepare Win", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -256,7 +259,7 @@ public sealed class CategoryRowViewModel : INotifyPropertyChanged
         }
     }
 
-    public string StatusText { get; private set; } = "Not run";
+    public string StatusText { get; private set; } = Loc.T("status.notrun");
     public Brush StatusBrush { get; private set; } = UiPalette.Muted;
     public string LeadGlyph { get; private set; } = "\uE823";
     public Brush LeadBrush { get; private set; } = UiPalette.Muted;
@@ -276,32 +279,32 @@ public sealed class CategoryRowViewModel : INotifyPropertyChanged
         if (Tasks.Count == 0)
         {
             // "Logging and verification" has no discrete tasks - it reflects the run itself.
-            if (lastRun != null) { text = "Completed"; brush = UiPalette.Green; glyph = "\uE930"; }
-            else { text = "Not run"; brush = UiPalette.Muted; glyph = "\uE823"; }
+            if (lastRun != null) { text = Loc.T("status.completed"); brush = UiPalette.Green; glyph = "\uE930"; }
+            else { text = Loc.T("status.notrun"); brush = UiPalette.Muted; glyph = "\uE823"; }
         }
         else if (Tasks.Any(r => r.Status is RunStatus.Checking or RunStatus.Applying))
         {
-            text = "Running…"; brush = UiPalette.AccentLight; glyph = "\uE895";
+            text = Loc.T("status.running"); brush = UiPalette.AccentLight; glyph = "\uE895";
         }
         else if (Tasks.Any(r => r.Status == RunStatus.Failed))
         {
-            text = "Failed"; brush = UiPalette.Red; glyph = "\uE711";
+            text = Loc.T("status.failed"); brush = UiPalette.Red; glyph = "\uE711";
         }
         else if (Tasks.Any(r => r.Status == RunStatus.Warning))
         {
-            text = "Issues"; brush = UiPalette.Amber; glyph = "\uE7BA";
+            text = Loc.T("status.issues"); brush = UiPalette.Amber; glyph = "\uE7BA";
         }
         else if (Tasks.Any(r => r.Status is RunStatus.AlreadyDone or RunStatus.CorrectedNow))
         {
-            text = "Completed"; brush = UiPalette.Green; glyph = "\uE930";
+            text = Loc.T("status.completed"); brush = UiPalette.Green; glyph = "\uE930";
         }
         else if (Tasks.Any(r => r.Status == RunStatus.NotApplicable))
         {
-            text = "N/A"; brush = UiPalette.Muted; glyph = "\uE738";
+            text = Loc.T("status.na"); brush = UiPalette.Muted; glyph = "\uE738";
         }
         else
         {
-            text = "Not run"; brush = UiPalette.Muted; glyph = "\uE823";
+            text = Loc.T("status.notrun"); brush = UiPalette.Muted; glyph = "\uE823";
         }
 
         StatusText = text;

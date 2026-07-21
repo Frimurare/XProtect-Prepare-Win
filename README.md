@@ -34,6 +34,8 @@ This makes the tool **idempotent** — you can re-run it any time. After a Windo
 - **Optional extras** — OpenSSH server and SNMP, when you want them
 - **Windows Update toggle** — pause updates during installation windows, resume after
 - **Full audit trail** — everything is logged, and every registry value changed is backed up first, to `C:\Milestonecheck-ulfh`
+- **Four languages** — **English, Svenska, Dansk and Norsk**. The app follows your Windows display language automatically, with a manual override in Settings.
+- **Light & dark theme** — follows your Windows app theme, and switches live if you change it while the app is open.
 
 ## Screenshots
 
@@ -45,9 +47,25 @@ This makes the tool **idempotent** — you can re-run it any time. After a Windo
 
 ![System — hardware, OS and drive details with 64 KB block-size badges](docs/screenshot-system.png)
 
-*Settings are saved automatically and apply to both the UI and silent runs. Pick which drives get whole-drive Defender exclusions, choose your NTP upstream from 37 country pools (plus the global pool and Windows default — the peer list preview shows exactly what will be configured, `,0x9` flags included), and toggle the optional SSH/SNMP tasks.*
+*The Preparation page is where the idempotent model shows itself: every task with its own checkbox, description and live status. On an already-prepared machine it's a wall of green "Already done" — each row even tells you what it verified ("All 10 process exclusions present, incl. VictoriaLogs"). The "Check only" button audits everything without changing a single setting.*
 
-![Settings — drive exclusions, NTP time source picker and optional tasks](docs/screenshot-settings.png)
+![Preparation — every task checked first, with live per-task status](docs/screenshot-preparation.png)
+
+*Tools collects the standalone utilities: NTP Recovery detects and fixes the classic time-service polling bug on machines prepared with older scripts, the Windows Update toggle keeps updates out of business hours on recording servers, and System report writes a check-only audit of the whole machine — perfect as pre-install documentation or customer handover.*
+
+![Tools — NTP Recovery, Windows Update toggle and system report](docs/screenshot-tools.png)
+
+*Logs shows the live output of the current session and every previous preparation run — timestamped, plain text, double-click to open. What you see here is exactly what lands in `C:\Milestonecheck-ulfh`.*
+
+![Logs — live session output and previous run logs](docs/screenshot-logs.png)
+
+*Settings are saved automatically and apply to both the UI and silent runs. Pick your language, choose which drives get whole-drive Defender exclusions, and select your NTP upstream from 37 country pools (plus the global pool and Windows default — the peer preview shows exactly what will be configured, `,0x9` flags included).*
+
+![Settings — language, drive exclusions and NTP time source picker](docs/screenshot-settings.png)
+
+*And the About page — the werewolf, the version, and the honest fine print: built by one person to make life easier for XProtect technicians, not affiliated with Milestone Systems A/S in any way.*
+
+![About — version, author and disclaimer](docs/screenshot-about.png)
 
 ## Install
 

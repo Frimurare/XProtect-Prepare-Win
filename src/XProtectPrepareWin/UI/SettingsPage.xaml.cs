@@ -8,6 +8,16 @@ public partial class SettingsPage : UserControl
 {
     private readonly AppState _state;
     private readonly bool _initialized;
+    private readonly string _startupLanguageSetting;
+
+    private static readonly (string Key, string Display)[] Languages =
+    {
+        ("auto", ""),        // display resolved via Loc at runtime
+        ("en", "English"),   // endonyms - identical in every UI language
+        ("sv", "Svenska"),
+        ("da", "Dansk"),
+        ("no", "Norsk"),
+    };
 
     public SettingsPage(AppState state)
     {
@@ -15,6 +25,20 @@ public partial class SettingsPage : UserControl
         _state = state;
 
         var settings = _state.Settings;
+        _startupLanguageSetting = settings.Language;
+
+        // Language picker
+        foreach (var (key, display) in Languages)
+        {
+            LanguageCombo.Items.Add(new ComboBoxItem
+            {
+                Content = key == "auto" ? Loc.T("settings.lang.auto") : display,
+                Tag = key,
+            });
+        }
+        var langIdx = Array.FindIndex(Languages, l => l.Key.Equals(settings.Language, StringComparison.OrdinalIgnoreCase));
+        LanguageCombo.SelectedIndex = langIdx >= 0 ? langIdx : 0;
+
         if (settings.DrivesSelection.Equals("storage", StringComparison.OrdinalIgnoreCase))
         {
             DrivesStorageRadio.IsChecked = true;
@@ -35,12 +59,27 @@ public partial class SettingsPage : UserControl
         RestartExplorerToggle.IsChecked = settings.RestartExplorer;
 
         foreach (var (key, name) in NtpCore.Sources)
-            NtpSourceCombo.Items.Add(new ComboBoxItem { Content = name, Tag = key });
+            NtpSourceCombo.Items.Add(new ComboBoxItem { Content = Loc.T($"ntp.{key}", name), Tag = key });
         var idx = NtpCore.Sources.ToList().FindIndex(s => s.Key == settings.NtpSource);
         NtpSourceCombo.SelectedIndex = idx >= 0 ? idx : 0;
         UpdateNtpPreview();
 
         _initialized = true;
+    }
+
+    private void LanguageCombo_Changed(object sender, SelectionChangedEventArgs e)
+    {
+        if (!_initialized) return;
+        if (LanguageCombo.SelectedItem is ComboBoxItem { Tag: string key })
+        {
+            _state.Settings.Language = key;
+            Save();
+            // Applied on next start - Loc strings are resolved once at startup.
+            LanguageRestartHint.Visibility =
+                key.Equals(_startupLanguageSetting, StringComparison.OrdinalIgnoreCase)
+                    ? Visibility.Collapsed
+                    : Visibility.Visible;
+        }
     }
 
     private void NtpSourceCombo_Changed(object sender, SelectionChangedEventArgs e)
@@ -55,8 +94,8 @@ public partial class SettingsPage : UserControl
     }
 
     private void UpdateNtpPreview() =>
-        NtpPeersPreview.Text = "Peers: " + NtpCore.PeersFor(
-            (NtpSourceCombo.SelectedItem as ComboBoxItem)?.Tag as string ?? _state.Settings.NtpSource);
+        NtpPeersPreview.Text = string.Format(Loc.T("settings.ntp.peersFmt"), NtpCore.PeersFor(
+            (NtpSourceCombo.SelectedItem as ComboBoxItem)?.Tag as string ?? _state.Settings.NtpSource));
 
     private void Save() => _state.Settings.Save();
 

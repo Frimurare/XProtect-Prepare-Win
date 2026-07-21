@@ -14,6 +14,7 @@ public partial class SystemPage : UserControl
         InitializeComponent();
         _state = state;
         _state.SnapshotLoaded += Refresh;
+        ThemeManager.ThemeChanged += Refresh; // drive badge brushes are precomputed
         Loaded += (_, _) => Refresh();
         Refresh();
     }
@@ -23,13 +24,13 @@ public partial class SystemPage : UserControl
         var snap = _state.Snapshot;
         if (snap == null)
         {
-            OsText.Text = "Detecting…";
+            OsText.Text = Loc.T("common.detecting");
             VersionText.Text = "…";
             CpuText.Text = "…";
             RamText.Text = "…";
             DomainText.Text = "…";
             XProtectText.Text = "…";
-            DrivesEmptyText.Text = "Detecting drives…";
+            DrivesEmptyText.Text = Loc.T("sys.detectingDrives");
             DrivesEmptyText.Visibility = Visibility.Visible;
             return;
         }
@@ -38,11 +39,11 @@ public partial class SystemPage : UserControl
         VersionText.Text = snap.OsVersion;
         CpuText.Text = snap.Cpu;
         RamText.Text = $"{snap.RamGb:N1} GB";
-        DomainText.Text = snap.IsDomainJoined ? "Domain joined" : "Workgroup";
-        XProtectText.Text = snap.XProtectProduct ?? "Not installed (ready to prepare)";
+        DomainText.Text = snap.IsDomainJoined ? Loc.T("sys.domainJoined") : Loc.T("sys.workgroup");
+        XProtectText.Text = snap.XProtectProduct ?? Loc.T("sys.notInstalledReady");
 
         DrivesList.ItemsSource = snap.Drives.Select(d => new DriveDisplayRow(d)).ToList();
-        DrivesEmptyText.Text = "No drives detected.";
+        DrivesEmptyText.Text = Loc.T("sys.noDrives");
         DrivesEmptyText.Visibility = snap.Drives.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 }
@@ -68,7 +69,7 @@ public sealed class DriveDisplayRow
         Label = string.IsNullOrWhiteSpace(d.Label) ? "—" : d.Label;
         SizeText = $"{d.SizeGb:N1} GB";
         FreeText = $"{d.FreeGb:N1} GB";
-        SystemTag = d.IsSystem ? "System" : "";
+        SystemTag = d.IsSystem ? Loc.T("sys.systemTag") : "";
 
         if (d.BytesPerCluster is int bytes)
         {
@@ -87,7 +88,7 @@ public sealed class DriveDisplayRow
         if (d.IndexingEnabled is bool indexing)
         {
             // For recording drives, indexing off is the desired state.
-            IndexText = indexing ? "On" : "Off";
+            IndexText = indexing ? Loc.T("sys.on") : Loc.T("sys.off");
             IndexBrush = indexing ? UiPalette.Amber : UiPalette.Green;
             IndexBg = indexing ? UiPalette.AmberBg : UiPalette.GreenBg;
         }
