@@ -37,7 +37,17 @@ This makes the tool **idempotent** — you can re-run it any time. After a Windo
 
 ## Screenshots
 
-![UI](docs/ui-mockup.jpg)
+*The Dashboard after a completed run on a real XProtect VMS 2025 R3 lab server — every category checked and green, with the detected OS, XProtect release and last-run time at a glance. Run it again any time: what's already right stays untouched.*
+
+![Dashboard — system ready for XProtect installation](docs/screenshot-dashboard.png)
+
+*The System page shows what you're working with before you touch anything: OS, CPU, memory, domain state, the detected XProtect release — and every drive with its allocation-unit size and indexing state. Green 64 KB badges are ready for recording storage; the amber 4 KB badge on the OS drive is expected and left alone.*
+
+![System — hardware, OS and drive details with 64 KB block-size badges](docs/screenshot-system.png)
+
+*Settings are saved automatically and apply to both the UI and silent runs. Pick which drives get whole-drive Defender exclusions, choose your NTP upstream from 37 country pools (plus the global pool and Windows default — the peer list preview shows exactly what will be configured, `,0x9` flags included), and toggle the optional SSH/SNMP tasks.*
+
+![Settings — drive exclusions, NTP time source picker and optional tasks](docs/screenshot-settings.png)
 
 ## Install
 
