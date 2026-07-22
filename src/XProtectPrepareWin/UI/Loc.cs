@@ -4,19 +4,19 @@ namespace XProtectPrepareWin.UI;
 
 /// <summary>
 /// Tiny localization engine. Strings live in <see cref="LocStrings"/> as
-/// [en, sv, da, no] arrays. Init once at startup - language changes need an
+/// [en, sv, da, no, fi] arrays. Init once at startup - language changes need an
 /// app restart, so lookups never have to be observable.
 /// </summary>
 public static class Loc
 {
-    /// <summary>Active language code: "en", "sv", "da" or "no".</summary>
+    /// <summary>Active language code: "en", "sv", "da", "no" or "fi".</summary>
     public static string Lang { get; private set; } = "en";
 
     private static int _index;
 
     /// <summary>
     /// Resolve the active language from the persisted setting ("auto", "en",
-    /// "sv", "da" or "no"). "auto" follows the Windows display language,
+    /// "sv", "da", "no" or "fi"). "auto" follows the Windows display language,
     /// with nb/nn/no all mapping to Norwegian bokmål.
     /// </summary>
     public static void Init(string? setting)
@@ -30,12 +30,13 @@ public static class Loc
                 "sv" => "sv",
                 "da" => "da",
                 "nb" or "nn" or "no" => "no",
+                "fi" => "fi",
                 _ => "en",
             };
         }
 
-        Lang = code switch { "sv" => "sv", "da" => "da", "no" => "no", _ => "en" };
-        _index = Lang switch { "sv" => 1, "da" => 2, "no" => 3, _ => 0 };
+        Lang = code switch { "sv" => "sv", "da" => "da", "no" => "no", "fi" => "fi", _ => "en" };
+        _index = Lang switch { "sv" => 1, "da" => 2, "no" => 3, "fi" => 4, _ => 0 };
     }
 
     /// <summary>Translate a key. Falls back to English, then to the key itself.</summary>

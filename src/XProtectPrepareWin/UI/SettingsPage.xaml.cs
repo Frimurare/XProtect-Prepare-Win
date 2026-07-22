@@ -17,6 +17,7 @@ public partial class SettingsPage : UserControl
         ("sv", "Svenska"),
         ("da", "Dansk"),
         ("no", "Norsk"),
+        ("fi", "Suomi"),
     };
 
     public SettingsPage(AppState state)

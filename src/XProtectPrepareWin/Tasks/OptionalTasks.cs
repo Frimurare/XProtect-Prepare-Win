@@ -11,7 +11,7 @@ public sealed class SshServerTask : IPrepTask
     public string Id => "ssh-server";
     public string Name => "SSH server";
     public string Category => "Optional extras";
-    public string Description => "OpenSSH Server with password auth for admins, autostart and TCP 22 open (optional)";
+    public string Description => "OpenSSH Server (bundled installer, no download needed) with password auth for admins, autostart and TCP 22 open (optional)";
     public bool Optional => true;
     public bool CheckOnly => false;
 
@@ -75,12 +75,31 @@ public sealed class SshServerTask : IPrepTask
 
         if (!Svc.Exists("sshd"))
         {
-            var install = await ctx.PowerShellAsync(
-                "Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0 -ErrorAction Stop | Out-Null", 900);
-            if (!install.Ok)
-                throw new InvalidOperationException(
-                    "OpenSSH Server capability install failed (requires Windows Update access): " +
-                    Ps.Truncate(install.AllOutput, 300));
+            var installed = false;
+
+            // Preferred path: the OpenSSH-Win64 MSI is embedded in this exe, so it
+            // installs locally in seconds with no Windows Update / internet access -
+            // exactly the locked-down servers where you most want SSH.
+            if (TryExtractBundledMsi(out var msiPath))
+            {
+                var msi = await ctx.RunAsync("msiexec.exe", $"/i \"{msiPath}\" /qn /norestart", 600);
+                installed = msi.Ok && Svc.Exists("sshd");
+                try { File.Delete(msiPath); } catch { /* temp file, best effort */ }
+                if (!installed)
+                    ctx.Log("Bundled OpenSSH install did not register the sshd service; falling back to the Windows capability.");
+            }
+
+            // Fallback: the Windows "Feature on Demand" capability (needs WU access).
+            if (!installed)
+            {
+                var install = await ctx.PowerShellAsync(
+                    "Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0 -ErrorAction Stop | Out-Null", 900);
+                if (!install.Ok)
+                    throw new InvalidOperationException(
+                        "OpenSSH Server install failed. The bundled installer did not register sshd and the " +
+                        "Windows capability fallback failed (needs Windows Update access): " +
+                        Ps.Truncate(install.AllOutput, 300));
+            }
         }
 
         // Start sshd once so it generates ProgramData\ssh\sshd_config, then stop to edit it.
@@ -96,6 +115,26 @@ public sealed class SshServerTask : IPrepTask
         await ctx.RunAsync("sc.exe", "config sshd start= auto", 60);
 
         await Firewall.RecreateInboundRuleAsync(ctx, FirewallRuleName, "TCP", 22);
+    }
+
+    /// <summary>Write the embedded OpenSSH-Win64 MSI to a temp file. Returns false
+    /// if the resource is missing (e.g. a build without the bundle).</summary>
+    private static bool TryExtractBundledMsi(out string path)
+    {
+        path = "";
+        try
+        {
+            using var stream = typeof(SshServerTask).Assembly.GetManifestResourceStream("OpenSSH-Win64.msi");
+            if (stream is null) return false;
+            var tmp = Path.Combine(Path.GetTempPath(), "XProtectPrepareWin-OpenSSH-Win64.msi");
+            using (var file = File.Create(tmp)) stream.CopyTo(file);
+            path = tmp;
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     /// <summary>Line edits ported 1:1 from Install-SSHServer.</summary>

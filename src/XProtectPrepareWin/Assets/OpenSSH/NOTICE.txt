@@ -1,0 +1,9 @@
+This folder contains the official OpenSSH for Windows (Win32-OpenSSH) MSI
+installer, redistributed unmodified so the optional SSH task can install
+OpenSSH Server locally without a Windows Update / internet dependency.
+
+OpenSSH is developed by the OpenBSD project and the Win32-OpenSSH port is
+published by Microsoft under the MIT License. It is included here under the
+terms of that license; XProtect Prepare Win claims no ownership of it.
+
+Upstream: https://github.com/PowerShell/Win32-OpenSSH

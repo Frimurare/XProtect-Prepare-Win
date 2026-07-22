@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3 "Fat Hippo" — 2026-07-22
+
+- **Finnish (Suomi)** joins the language line-up — the app now speaks English, Svenska, Dansk, Norsk and **Suomi**, following the Windows display language with a manual override in Settings.
+- **Bundled OpenSSH — instant, offline SSH install.** The optional SSH task now installs OpenSSH Server from an installer embedded in the app (msiexec, seconds), with **no Windows Update or internet dependency** — ideal for locked-down recording servers. The Windows "Feature on Demand" capability remains an automatic fallback. (The app grows ~6 MB; a fair trade for an SSH install that always works.)
+
 ## 1.0.2 "Happy Tekkie" — 2026-07-22
 
 - **Light & dark theme, following Windows** — the app now reads the Windows app-theme setting and matches it, live: switch Windows between dark and light and the app follows without a restart.

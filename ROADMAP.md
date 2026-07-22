@@ -3,7 +3,10 @@
 Planned features and improvements for **XProtect Prepare Win**. Nothing here is a
 promise of a date — it's what's on the workbench.
 
-## v1.0.3 "Happy Hippo" (planned)
+## ✅ v1.0.3 "Fat Hippo" (shipped) — bundled OpenSSH + Finnish
+
+Shipped: OpenSSH is now bundled inside the app (see below), and Finnish (Suomi)
+joins the language line-up alongside English, Swedish, Danish and Norwegian.
 
 ### Bundled OpenSSH — instant, offline SSH install
 

@@ -13,7 +13,7 @@
     <RootNamespace>XProtectPrepareWin</RootNamespace>
     <ApplicationIcon>Assets/app.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <Company>Manvarg AB</Company>
     <Authors>Ulf Holmström</Authors>
     <Product>XProtect Prepare Win</Product>
@@ -22,8 +22,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\**\*" Exclude="Assets\app.ico" />
+    <!-- WPF resources (images etc.). The bundled OpenSSH MSI is handled below as
+         an embedded resource instead, so exclude it from the WPF resource glob. -->
+    <Resource Include="Assets\**\*" Exclude="Assets\app.ico;Assets\OpenSSH\**\*" />
     <Content Include="Assets\app.ico" CopyToOutputDirectory="PreserveNewest" />
+    <!-- The official OpenSSH-Win64 MSI, embedded so the optional SSH task can
+         install it locally with no Windows Update / internet dependency. -->
+    <EmbeddedResource Include="Assets\OpenSSH\OpenSSH-Win64.msi" LogicalName="OpenSSH-Win64.msi" />
   </ItemGroup>
 
 </Project>

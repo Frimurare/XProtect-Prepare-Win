@@ -34,7 +34,8 @@ This makes the tool **idempotent** — you can re-run it any time. After a Windo
 - **Optional extras** — OpenSSH server and SNMP, when you want them
 - **Windows Update toggle** — pause updates during installation windows, resume after
 - **Full audit trail** — everything is logged, and every registry value changed is backed up first, to `C:\Milestonecheck-ulfh`
-- **Four languages** — **English, Svenska, Dansk and Norsk**. The app follows your Windows display language automatically, with a manual override in Settings.
+- **Five languages** — **English, Svenska, Dansk, Norsk and Suomi**. The app follows your Windows display language automatically, with a manual override in Settings.
+- **Optional SSH, bundled** — the OpenSSH installer is embedded in the app, so enabling SSH is a local, offline, few-second operation with no Windows Update dependency.
 - **Light & dark theme** — follows your Windows app theme, and switches live if you change it while the app is open.
 
 ## Screenshots
@@ -70,6 +71,10 @@ This makes the tool **idempotent** — you can re-run it any time. After a Windo
 *Bonus: the same app in **Svenska** with the **light theme** — the UI follows your Windows display language and app theme automatically. Här heter det Översikt, Förberedelse och Verktyg.*
 
 ![Svenska + light theme — System page](docs/screenshot-svenska-light.png)
+
+*...and in **Suomi** — the Dashboard on a prepared server, fully in Finnish. Järjestelmä on valmis!*
+
+![Suomi — Dashboard, system ready](docs/screenshot-suomi-dark.png)
 
 ## Install
 
