@@ -34,6 +34,32 @@ a few MB — a fair trade for an install that always works and finishes instantl
 
 ---
 
+## NTP: `ntp.se` as a first-class source + reachability check (requested 2026-10-14)
+
+Today the NTP task writes the chosen pool (`se` = `se.pool.ntp.org,0x9`,
+`windows` = `time.windows.com,0x9`, ...) and verifies only the *registry
+format*. Two things we now want, both from a real customer-server build where
+the house standard became the Swedish national time service:
+
+- **Add `ntp.se` (Netnod, the Swedish national time service) as a selectable
+  source** in Settings and on the CLI (`--ntp ntp.se`), and make it the
+  default for the `se` region instead of the pool. Keep the pool as fallback
+  peer: `ntp.se,0x9 se.pool.ntp.org,0x9`.
+- **Test the server, don't just write it.** After configuring, the task should
+  run `w32tm /stripchart /computer:<source> /samples:3 /dataonly` (or an NTP
+  query of our own on UDP/123) and treat *no answer* as a **warning with a
+  clear message** ("NTP source ntp.se did not respond - check outbound UDP/123
+  or pick another source"), both in the UI row and in the silent-mode log/exit
+  summary. Today a blocked UDP/123 passes silently and the server drifts until
+  Milestone complains about certificate/time skew.
+- Show the measured offset (ms) in the System report so handover documentation
+  proves the clock is actually disciplined.
+
+Also planned: run this task as part of every Prudencia server build with
+`--ntp ntp.se` (it is already in the build recipe as of SANDSANDVI-SV01).
+
+---
+
 ## Backlog / ideas
 
 - Same "bundle it, don't download it" treatment for anything else that currently
