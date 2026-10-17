@@ -3,6 +3,12 @@
 Planned features and improvements for **XProtect Prepare Win**. Nothing here is a
 promise of a date — it's what's on the workbench.
 
+## ✅ v1.0.4 "Leak Busters" (shipped) — motion detection HW acceleration Off
+
+Works around the Recording Server memory leak with NVIDIA-accelerated motion
+detection (*Automatic* leaks ~100 MB per camera and hour on 2025 R2-2026 R1).
+**Remove the task once the vendor ships a fix.**
+
 ## ✅ v1.0.3 "Fat Hippo" (shipped) — bundled OpenSSH + Finnish
 
 Shipped: OpenSSH is now bundled inside the app (see below), and Finnish (Suomi)
@@ -34,17 +40,27 @@ a few MB — a fair trade for an install that always works and finishes instantl
 
 ---
 
-## NTP: `ntp.se` as a first-class source + reachability check (requested 2026-10-14)
+## NEXT: `ntp.se` as the DEFAULT time source + reachability check (requested 2026-10-14, default decided 2026-10-17)
 
 Today the NTP task writes the chosen pool (`se` = `se.pool.ntp.org,0x9`,
 `windows` = `time.windows.com,0x9`, ...) and verifies only the *registry
 format*. Two things we now want, both from a real customer-server build where
 the house standard became the Swedish national time service:
 
-- **Add `ntp.se` (Netnod, the Swedish national time service) as a selectable
-  source** in Settings and on the CLI (`--ntp ntp.se`), and make it the
-  default for the `se` region instead of the pool. Keep the pool as fallback
-  peer: `ntp.se,0x9 se.pool.ntp.org,0x9`.
+- **Make `ntp.se` (Netnod, the Swedish national time service) the default
+  source** for new installs, in place of `time.windows.com`. Peers:
+  `ntp.se,0x9 se.pool.ntp.org,0x9`, with the pool as fallback. Netnod runs
+  stratum 1 servers traceable to Swedish national time (UTC(SP)) over anycast.
+  It is more accurate and more reliable than `time.windows.com`, and it works
+  from anywhere. Add `--ntp ntp.se` on the CLI and "ntp.se (Netnod)" at the
+  top of the Settings dropdown. All the other sources stay selectable
+  (`windows`, `global`, 37 country pools).
+- **Migrating existing settings:** `settings.json` stores `NtpSource="windows"`
+  both when the user chose it and when it was just the old default, so the two
+  cannot be told apart. Add `NtpSourceExplicit` (true only when the user picked
+  a source in Settings or with `--ntp`). When it is missing or false, treat
+  `windows` as "old default" and move it to `ntp.se`. An explicit choice is
+  never changed.
 - **Test the server, don't just write it.** After configuring, the task should
   run `w32tm /stripchart /computer:<source> /samples:3 /dataonly` (or an NTP
   query of our own on UDP/123) and treat *no answer* as a **warning with a

@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.4 — 2026-10-17
+## 1.0.4 "Leak Busters" — 2026-10-17
 
 - **New task: motion detection hardware acceleration Off.** With hardware acceleration set to *Automatic* on an NVIDIA GPU, the Recording Server leaks roughly 100 MB of memory per camera and hour until it runs out of memory and stops recording. Observed on XProtect 2025 R2, 2025 R3 and 2026 R1, with and without the latest hotfixes. The task runs on the Management Server when an NVIDIA GPU is present and sets *Off* on every camera, including disabled ones. Motion detection moves to the CPU, which costs some CPU but keeps memory flat. The Recording Server reloads the configuration without a restart. Each change is written to a backout list in `C:\Milestonecheck-ulfh\`. Run the tool again after adding cameras, because new cameras default to *Automatic*. This is a temporary workaround until Milestone ships a fix.
 
