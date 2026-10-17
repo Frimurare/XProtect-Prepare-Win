@@ -121,5 +121,5 @@ public sealed class TaskRunner
 
 public static class AppVersion
 {
-    public const string Version = "1.0.3";
+    public const string Version = "1.0.4";
 }

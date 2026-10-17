@@ -1024,6 +1024,22 @@ public static class LocStrings
             "Installerer MilestonePSTools via det offisielle webinstallasjonsprogrammet (kompatibelt med 2026 R1)",
             "Asentaa MilestonePSToolsin virallisella verkkoasennusohjelmalla (yhteensopiva 2026 R1:n kanssa)",
         },
+        ["task.motion-hwaccel.name"] = new[]
+        {
+            "Motion detection HW acceleration Off",
+            "Hårdvaruacceleration för rörelsedetektering av",
+            "Hardwareacceleration for bevægelsesdetektering fra",
+            "Maskinvareakselerasjon for bevegelsesdeteksjon av",
+            "Liikkeentunnistuksen laitteistokiihdytys pois",
+        },
+        ["task.motion-hwaccel.desc"] = new[]
+        {
+            "Works around the Recording Server memory leak with NVIDIA-accelerated motion detection",
+            "Kringgår minnesläckan i Recording Server vid NVIDIA-accelererad rörelsedetektering",
+            "Omgår hukommelseslækagen i Recording Server ved NVIDIA-accelereret bevægelsesdetektering",
+            "Omgår minnelekkasjen i Recording Server ved NVIDIA-akselerert bevegelsesdeteksjon",
+            "Kiertää Recording Serverin muistivuodon NVIDIA-kiihdytetyssä liikkeentunnistuksessa",
+        },
         ["task.ssh-server.name"] = new[]
         {
             "SSH server",

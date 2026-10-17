@@ -13,7 +13,7 @@
     <RootNamespace>XProtectPrepareWin</RootNamespace>
     <ApplicationIcon>Assets/app.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <Company>Manvarg AB</Company>
     <Authors>Ulf Holmström</Authors>
     <Product>XProtect Prepare Win</Product>

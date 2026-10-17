@@ -37,6 +37,7 @@ public static class TaskCatalog
 
         // MilestonePSTools
         new MilestonePSToolsTask(),
+        new MotionHwAccelTask(),        // workaround for the Recording Server memory leak
 
         // Optional extras (off by default; enabled from Settings)
         new SshServerTask(),
