@@ -82,3 +82,12 @@ Also planned: run this task as part of every Prudencia server build with
   relies on a Windows Update pull (evaluate SNMP).
 - Optional CLI flag to write the check-only **System report** to a chosen path
   (handover documentation without opening the UI).
+
+## 1.0.5 – HW-acceleration för rörelsedetektering ska vara ett VAL, inte tvång (Ulf 2026-11-02 21:31)
+
+Bakgrund: 1.0.4 "Leak Busters" sätter `MotionHwAccelTask` (HardwareAccelerationMode = Off på alla kameror) automatiskt när ett NVIDIA-kort finns, och i `--silent` går det inte att välja bort. På ICA Orsa (Quadro P620, 21 kameror på Automatic, ingen bevisad läcka: recorder 1,76 GB, 0 RS-krascher/30 d) fick prepare därför inte köras alls (2026-11-02). Ulf: "Det skall väl vara en option?"
+
+- [ ] `MotionHwAccelTask` blir **opt-in**: GUI-kryssruta avbockad som standard, silent-flagga `--hwaccel-off` (och `--hwaccel-auto` för att återställa), ingen automatisk aktivering på NVIDIA-detektering.
+- [ ] Utan flaggan: tasken kör i **rapportläge** – listar kameror per HW-accel-läge, GPU-modell/drivrutin, recorder-minne (WorkingSet) och antal RS-krascher (7034) senaste 30 d, och skriver en rekommendation ("KF-1-mönster: ja/nej") i loggen. Beslutet tas av teknikern/Ulf.
+- [ ] Behåll FÖRE-dump + backout-fil per kamera när tasken körs skarpt (finns i 1.0.4).
+- [ ] Dokumentera i README: när Off är rätt (bevisad recorder-läcka, KF-1: 2025 R2/2026 R1 + GPU-motion; bevisat även 2022 R1 Torshallen och 2021 R1 Idre 2026-11-02) och när Automatic ska lämnas (fungerande system, ingen läcka – "vi lagar inget som fungerar").
